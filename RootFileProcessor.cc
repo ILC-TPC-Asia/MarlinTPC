@@ -290,6 +290,42 @@ void RootFileProcessor::processEvent( LCEvent * evt ) {
       double dzot = 999999.;
       double chg  = hp->getEDep() ;
       double fi0loc = sitep->GetCurState()(1, 0);
+
+      int modID = getModuleID( const_cast< EVENT::TrackerHit* >( hp ) ) ; 
+      int rowID = getRowID( const_cast< EVENT::TrackerHit* >( hp ) ,
+		            static_cast< const gear::TPCModule* >( moduleVec[ modID ]) ) ;
+      const double* hpos = hp->getPosition() ;
+      TVector3 xv( hpos[0], hpos[1], hpos[2] ) ;
+      float rc     = xv.Perp() ;
+      float phic   = TMath::ATan2( xv.X() , xv.Y() ) ;
+      const EVENT::LCObjectVec& pulseVec = hp->getRawHits() ;
+      
+      //--2018.11.21--//
+      gear::Vector2D offset = moduleVec[ modID ]->getOffset(); //offsetにmoduleの中心座標(r,phi)を入れる
+      double mcx = offset[0] * cos(offset[1]);
+      double mcy = offset[0] * sin(offset[1]);
+      TVector3 mcv( mcx, mcy, 0.) ;
+      TVector3 xyv( xv.X(), xv.Y(), 0.) ; //
+      TVector3 mctoxv = xyv - mcv;
+
+      //THelicalTrack helix = static_cast<TKalTrackState>(sitep->GetCurState()).GetHelix();
+      const TKalTrackState &curstate = static_cast<TKalTrackState>(sitep->GetCurState());
+      std::cerr << "cuestate = " << (const void *) & curstate << std::endl;
+      curstate.DebugPrint();
+      THelicalTrack helix(curstate, sitep->GetPivot(), sitep->GetBfield());
+
+      TMatrixD dxdphi(3,1);
+      dxdphi = helix.CalcDxDphi(0.); //hit点でのhelixの接線ベクトル
+      TVector3 tanv(dxdphi[0][0], dxdphi[1][0], 0.);
+
+      TVector3 extprod = (tanv.Unit()).Cross(mctoxv.Unit());
+      double sphi = extprod.Z();
+      double cphi = (tanv.Unit())*(mctoxv.Unit());
+      double incidentphi = TMath::ATan2( sphi , cphi );
+
+      //--end--//
+
+
       sitep->InvFilter() ;
       dxot = sitep->GetResVec( TVKalSite::kInvFiltered)(0,0) ;
       dzot = sitep->GetResVec( TVKalSite::kInvFiltered)(1,0) ;
@@ -307,17 +343,10 @@ void RootFileProcessor::processEvent( LCEvent * evt ) {
       _hits->fill( 11 , nhits[index] ) ;
       _hits->fill( 12 , nTrks ) ;
       _hits->fill( 13 , fi0loc ) ;
+      _hits->fill( 14 , incidentphi ) ;
       _hits->addRow() ;
      
        
-      int modID = getModuleID( const_cast< EVENT::TrackerHit* >( hp ) ) ; 
-      int rowID = getRowID( const_cast< EVENT::TrackerHit* >( hp ) ,
-		            static_cast< const gear::TPCModule* >( moduleVec[ modID ]) ) ;
-      const double* hpos = hp->getPosition() ;
-      TVector3 xv( hpos[0], hpos[1], hpos[2] ) ;
-      float rc     = xv.Perp() ;
-      float phic   = TMath::ATan2( xv.X() , xv.Y() ) ;
-      const EVENT::LCObjectVec& pulseVec = hp->getRawHits() ;
       for ( std::vector< EVENT::LCObject* >::const_iterator i_pls  = pulseVec.begin() ;
                                                             i_pls != pulseVec.end() ;
 							    i_pls++ ) {
@@ -470,6 +499,9 @@ void RootFileProcessor::setNtuple() {
   _hitsItemType.push_back("int");
 
   _hitsItemNames.push_back("fi0loc");
+  _hitsItemType.push_back("double");
+
+  _hitsItemNames.push_back("incidentphi");
   _hitsItemType.push_back("double");
 
   _trksItemNames.push_back("ndf");

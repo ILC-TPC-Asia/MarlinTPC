@@ -1,0 +1,110 @@
+(Update Record)
+2013/12/04 Asian MarlinTPC Team
+
+(Description)
+--------------------------------------------------------------------------------
+[A] Prerequistes
+--------------------------------------------------------------------------------
+In the following you are assumed to have installed the decent 
+version of MarlinTPC (r2910 for the moment).
+If not, get the source code from the svn repository, by typing
+
+$ mkdir -p /proj/cdc/soft/MarlinTPC/src
+$ cd /proj/cdc/soft/MarlinTPC/
+$ svn co https://svnsrv.desy.de/public/ilctools/ilcinstall/trunk
+
+and install it as follows:
+
+$ cd trunk
+$ patch -p1 -s -b < ../src/marlintpc-install-macosx10.9.patch
+$ ./ilcsoft-install -i release/v01-17-05/release-osx.cfg
+
+This will prepare MarlinTPC under a newly created directory:
+
+$ ls ../v01-17-05/MarlintTPC/v00-15/
+
+which is your MarlinTPC top directory.
+
+--------------------------------------------------------------------------------
+[B] First install Ryo's RootFileProcessor
+--------------------------------------------------------------------------------
+The analysis scripts rely on Ryo's RootFileProcessor which produces n-tuples
+from LCIO track data. So first, you need to install it.
+
+$ cd /proj/cdc/soft/MarlinTPC/v01-17-05/MarlintTPC/v00-15/
+$ tar -zxvf /your/download/directory/analysis.tar.gz
+$ cd build/
+$ cmake -C /proj/cdc/soft/MarlinTPC/v01-17-05/ILCSoft.cmake ..
+$ make install
+
+This will rebuild MarlinTPC with Ryo's RootFileProcessor.
+
+--------------------------------------------------------------------------------
+[C] Then install various Root scripts
+--------------------------------------------------------------------------------
+$ cd /proj/cdc/soft/MarlinTPC/v01-17-05/MarlintTPC/v00-15/
+$ tar -zxvf /proj/cdc/soft/MarlinTPC/src/LP_Asian_GEM_Module.tar.gz -C examples
+
+--------------------------------------------------------------------------------
+[D] Run Marlin to reconstruct events.
+--------------------------------------------------------------------------------
+$ source /proj/cdc/soft/MarlinTPC/v01-17-05/init_ilcsoft.sh
+$ cd examples/LP_Asian_GEM_Module
+$ vi reconstruction_libo_TEMPLATE.xml
+....
+    Adjust input raw data directory. By default it is assumed to be
+	/proj/cdc/data/altro/desy/
+....
+$ ./manyrun.sh <maxevt> >& log&
+
+If the maximum number of events to analyze per run, <maxevt>, is not given, 
+its default value 10000 will be used. You need to edit manyrun.sh to update
+the list of run numbers hard-coded in the script.
+Notice that manyrun.sh uses the "sed" command to replace strings like "RUNNO"
+and "MAXEVT" in the template steering file, reconstruciton_libo_TEMPLATE.xml
+and create a temporary file called "temp.xml", which can be deleted after the
+manyrun.sh script finnishes running.
+
+Output slcio and root files, rRUNNO.TPCTracks.slcio and rRUUNO.root, will be 
+saved in the same directory where "manyrun.sh" was run. After makeing sure
+that the reconstruction went smoothly by checking the "log" file, move these
+files to the "Data" subdirectory. 
+
+$ mv r*.slcio r*.root Data
+
+--------------------------------------------------------------------------------
+[E] Run analysis scripts to produce various plots
+--------------------------------------------------------------------------------
+In the following you are assumed to have all the data you need in ../Data.
+Depending on the run numbers you want to analyze, modifiy Runinfo.h and 
+various Root scripts:
+  Charge.C'(module, row)' 	# gain vs time/drift length
+  GMResol.C'(module, row)'	# resolution vs drift length
+  PadRes.C'(module, row)'	# PRF vs drift length
+  Residual.C'(module, row)'	# <residual> vs drift length
+  ResidualByRow.C'(irun)'	# <residual> vs layer for irun-th run
+
+
+For instance 
+
+$ cd /your/MarlinTPC/trunk/examples/LP_Asian_GEM_Module/Analysis
+$ root -l GMResol.C'(3,16)'
+
+will produce a "resolution vs drift length" plot for (module,row) = (3,16), 
+while
+
+$ cd /your/MarlinTPC/trunk/examples/LP_Asian_GEM_Module/Analysis
+$ root -l PadRes.C'(3,16)'
+
+will produce a "PRF width vs drift length" plot for (module,row) = (3,16).
+
+Enjoy!
+
+(Credits)
+Programs contained in this package have been developed mainly by the
+Asian MarlinTPC team, whose core members are
+Li, Bo: Tsinghua Univ.
+Ryo Yonamine: Sokendai, KEK
+Daizo Sakuragi: Kinki Univ.
+Yukihiro Kato: Kinki Univ.
+Keisuke Fujii: KEK

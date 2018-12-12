@@ -1,0 +1,45 @@
+<marlin>
+
+	<execute>
+		<processor name="MyAIDAProcessor" type="AIDAProcessor"/>
+		<processor name="MyRootFileProcessor"/>
+	</execute>
+
+	<global>
+
+		<parameter name="LCIOInputFiles">
+			rRUNNO.TPCtracks.slcio
+		</parameter>
+
+		<parameter name="MaxRecordNumber">
+			100
+		</parameter>
+
+		<parameter name="GearXMLFile">
+			gear_LP_TPC_GEM_7module.xml
+		</parameter>
+
+		<parameter name="Verbosity" option="DEBUG0-4,MESSAGE0-4,WARNIGN0-4,ERROR0-4,SILENT">
+			DEBUG
+		</parameter>
+	</global>
+
+	<processor name="MyAIDAProcessor" type="AIDAProcessor">
+
+		<parameter name="Compress" type="int">
+			1
+		</parameter>
+
+		<parameter name="FileName" type="string">
+			rRUNNO
+		</parameter>
+
+		<parameter name="FileType" type="string">
+			root
+		</parameter>
+
+	</processor>
+
+	<processor name="MyRootFileProcessor" type="RootFileProcessor">
+	</processor>
+</marlin>
