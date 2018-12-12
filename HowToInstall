@@ -18,3 +18,20 @@ EXHYBTrack.h
 
 download these files, and copy .cc files for /MarlinTPC/v01-04/analysis/src, .h files for /MarlinTPC/v01-04/analysis/include. 
 
+Then,
+cmake -C /cvmfs/ilc.desy.de/sw/x86_64_gcc49_sl6/v02-00-02/ILCSoft.cmake ..
+make install
+
+3. Change directory names in files
+In init_ilcsoft.sh, change pass of MarlinTPC to your directory. 
+ex)
+/cvmfs/ilc.desy.de/sw/x86_64_gcc49_sl6/v02-00-02/MarlinTPC...
+↓
+/home/ilc/yumia/TPC/anasoft/MarlinTPC/v02-00-02/...
+
+In examples/LP_Asian_GEM_Module/reconstruction_libo_TEMPLATE.xml, change pass of LCIOInputFiles. 
+
+/hsm/ilc/users/cdc/data/bmtest/2016Nov_DESY/2016Nov_slcio
+
+
+
