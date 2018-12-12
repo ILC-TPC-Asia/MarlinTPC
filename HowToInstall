@@ -11,3 +11,10 @@ cp -r /cvmfs/ilc.desy.de/sw/x86_64_gcc49_sl6/v02-00-02/init_ilcsoft.sh ~/.../(yo
 
 2. build
 First, you needs some new files. These files in this git directory. 
+RootFileProcessor.cc
+RootFileProcessor.h
+EXHYBTrack.cxx
+EXHYBTrack.h
+
+download these files, and copy .cc files for /MarlinTPC/v01-04/analysis/src, .h files for /MarlinTPC/v01-04/analysis/include. 
+
