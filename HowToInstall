@@ -1,0 +1,13 @@
+How to install Marlin TPC for kekcc
+
+1. Preparation
+Make work directory. 
+mkdir ~/.../(your TPC working directory)/v02-00-02/
+mkdir ~/.../(your TPC working directory)/v02-00-02/MarlinTPC
+
+copy latest virsion of MarlinTPC and init file in your directory. 
+cp -r /cvmfs/ilc.desy.de/sw/x86_64_gcc49_sl6/v02-00-02/MarlinTPC/v01-04 ~/.../(your TPC working directory)/v02-00-02/MarlinTPC
+cp -r /cvmfs/ilc.desy.de/sw/x86_64_gcc49_sl6/v02-00-02/init_ilcsoft.sh ~/.../(your TPC working directory)/v02-00-02/
+
+2. build
+First, you needs some new files. These files in this git directory. 
