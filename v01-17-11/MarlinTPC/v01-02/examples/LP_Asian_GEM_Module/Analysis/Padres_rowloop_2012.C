@@ -1,11 +1,12 @@
 #define CHECK_DIST
 #include <iomanip>
 #include "Runinfo.h+"
+//#include <string>
+
 void Process(Int_t run, Int_t module, Int_t row, 
              Double_t &x, Double_t &y, Double_t &dx, Double_t &dy);
 
-void Padres(Int_t module = 3, Int_t row = 18)
-//void Padres(Int_t module = 0, Int_t row = 17)
+void Padres_rowloop_2012(Int_t module = 3)
 {
 //--Set Style
   // Axis
@@ -29,30 +30,43 @@ void Padres(Int_t module = 3, Int_t row = 18)
   //    dlen [cm]      5     10     15     20     25     30     35     40     45     50
   //Int_t kRun[] = { 17319, 17367, 17324, 17364, 17327, 17359, 17375, 17356, 17340, 17352}; // B=1T
   //Int_t kRun[] = { 17319, 17367, 17324, 17364, 17327, 17359, 17331, 17356, 17340, 17352}; // B=1T
-  //Int_t kRun[] = { 18564, 18563, 18562, 18561, 18552, 18551, 18550, 18549, 18548, 18547}; // B=1T
- //Int_t kRun[] = { 19985, 19984, 19983, 19982, 19981, 19980, 19979, 19978, 19977, 19976, 19975, 19974, 19973, 19972}; // B=1T
+  Int_t kRun[] = { 18564, 18563, 18562, 18561, 18552, 18551, 18550, 18549, 18548, 18547}; // B=1T
+  //Int_t kRun[] = { 19985, 19984, 19983, 19982, 19981, 19980, 19979, 19978, 19977, 19976, 19975, 19974, 19973, 19972}; // B=1T
  //Int_t kRun[] = { 20041, 20043, 20044, 20045, 20046, 20047, 20048, 20049, 20050, 20051, 20052, 20053, 20054, 20055}; // B=1T
-  Int_t kRun[] = { 18609, 18606, 18605, 18601, 18600, 18598, 18597, 18595, 18594, 18592, 18591}; // B=1T
+ //Int_t kRun[] = { 18609, 18606, 18605, 18601, 18600, 18598, 18597, 18595, 18594, 18592, 18591}; // B=1T
  // Int_t kRun[] = { 19868, 19867, 19866, 19865, 19869, 19864, 19870, 19863, 19862, 19861, 19871, 19860, 19872, 19873, 19874}; // B=1T,with gate(not recomend)
-  // Int_t kRun[] = { 19816, 19817, 19818, 19819, 19820, 19821, 19822, 19824, 19825, 19826, 19827, 19828};//non reco(0T) 
-   //Int_t kRun[] = { 19717, 19718, 19719, 19720, 19721, 19722, 19723, 19724, 19725, 19726, 19727, 19728};//non reco2
-   //Int_t kRun[] = { 19932, 19928, 19929, 19931, 19930, 19933, 19934, 19935, 19936, 19937, 19938, 19939, 19940, 19941, 19942};//Vgate=0
-  // Int_t kRun[] = {19895, 19894, 19893, 19892, 19891, 19890, 19889, 19888, 19887, 19886, 19885, 19884, 19883, 19882, 19881 };//phi=-20
-   //Int_t kRun[] = {19746, 19747, 19748, 19749, 19750, 19752, 19753, 19754, 19755, 19756, 19757, 19758};//phi=20
-   //Int_t kRun[] = {19743, 19742, 19741, 19740, 19739, 19738, 19737, 19736, 19735, 19734, 19733, 19732 };//phi=10
+   //Int_t kRun[] = { 19816, 19817, 19818, 19819, 19820, 19821, 19822, 19824, 19825, 19826, 19827, 19828};//non reco2 
+   //Int_t kRun[] = { 19717, 19718, 19719, 19720, 19721, 19722, 19723, 19724, 19725, 19726, 19727, 19728};//non reco3
+  //Int_t kRun[] = { 19743, 19742, 19741, 19740, 19739, 19738,19737, 19736, 19735, 19734, 19733, 19732}; // B=1T,with gate(not recomend) phi=10
+  
+  
+     ofstream outf("result_2012/Cd_by_Row_gate_module3_18564.dat");
+     ofstream outf2("result_2012/sigmaPR0_by_Row_gate_module3_18564.dat");
+  // ---------------
+  // Loop over rows
+  // ---------------
+#if 1
+  Int_t k = 1;
+  Int_t krow = 28;
+  Int_t row = 1;
+  for (Int_t j=1; j<krow; j++) { 
+  //for (Int_t j=16; j<17; j++) { Int_t row = j;
+    //Int_t row = j;
+     row = j;
+#endif    
 
   // ---------------
   // Loop over runs
   // ---------------
   Int_t n = 0;
-  for (Int_t i=0; i<kNp; i++) {
+  for (Int_t i=1; i<kNp; i++) {
     Int_t run = kRun[i];
     Double_t x, y, dx, dy;
     Process(run, module, row, x, y, dx, dy);
     
     xdata[i] = x; ydata[i] = y*y; dxdata[i] = dx; dydata[i] = 2*y*dy; 
   }
-
+  
   // ---------------
   // Plot PRF vs z
   // ---------------
@@ -65,7 +79,7 @@ void Padres(Int_t module = 3, Int_t row = 18)
   grp->SetTitle(titlestr.str().data());
   grp->GetHistogram()->GetXaxis()->SetLimits(0.,550.);
   grp->GetHistogram()->GetXaxis()->SetTitle("Drift Length: z [mm]");
-  grp->GetHistogram()->GetYaxis()->SetTitle("#sigma_{PR}^{2} [mm^{2}]");
+  grp->GetHistogram()->GetYaxis()->SetTitle("#sigma_{PR}(0)^{2} [mm^{2}]");
   grp->Draw("ap");
   grp->SetMarkerColor(1);
   grp->SetMarkerStyle(21);
@@ -78,13 +92,8 @@ void Padres(Int_t module = 3, Int_t row = 18)
 
   fun.SetParameter(0,0.1);
   fun.SetParameter(1,0.01);
-  //grp->Fit(&fun,"","",250.,500.);
-  grp->Fit(&fun,"","",200.,500.);
-  //grp->Fit(&fun,"","",0.,500.);
-  fun.SetParameter(0,fun.GetParameter(0));
-  fun.SetParameter(1,fun.GetParameter(1));
-  grp->Fit(&fun,"","",200.,550.);
-  //grp->Fit(&fun,"","",0.,550.);
+  grp->Fit(&fun,"","",200.,600.);
+  //grp->Fit(&fun,"","",350.,600.);
   Double_t sigma0  = fun.GetParameter(0) * 1.e3;             // [#mum]
   Double_t dsigma0 = fun.GetParError (0) * 1.e3;             // [#mum]
   Double_t cd      = fun.GetParameter(1) * sqrt(10.) * 1e3;  // [#mum/#sqrt{cm}]
@@ -118,17 +127,28 @@ void Padres(Int_t module = 3, Int_t row = 18)
   fitfun->SetTextAlign(12);
   fitfun->DrawLatex(50.,ymax/2, "#sigma_{PR}^{2} = #sigma_{PR}(0)^{2}+(C_{D}^{2}) z");
 
-#if 0
+#if 1
   // save plot as pdf file
   Runinfo &rinfo = *Runinfo::GetInstancePtr();
   stringstream ofile;
-  ofile << "PadRes_Module" << module << "_Row" << row << "_B" << rinfo.GetBfield(run) << "T" 
-        << "_P" << rinfo.GetMomentum(run) << "GeV.pdf"<< ends;
+  ofile << "result_2012/PadRes_Module" << module << "_Row" << row << "_withgate18564.pdf"<< ends;
   c1->Print(ofile.str().data());
 #endif
-
+#if 1
+ //stringstream datname
+     //datname << "result/Cd_by_row_field.dat" << ends;
+     //string datname(result/Cd_by_row_field.dat) ;
+     //cerr << "dat name: " << datname << endl;
+     //ofstream outf("datname");
+     //ofstream outf("result/Cd_by_Row_field.dat");
+     outf << row << " " << cd << " " << dcd <<endl;
+     //ofstream outf2("result/sigmaPR0_by_Row_field.dat");
+     outf2 << row << " " << sigma0 << " " << dsigma0 <<endl;
+     cerr << row <<" "<< cd << " " << dcd << endl;
+     cerr << row <<" "<< sigma0 << " " << dsigma0 << endl;
+#endif
 }
-
+}
 void Process(Int_t run, Int_t module, Int_t row, 
              Double_t &x, Double_t &y, Double_t &dx, Double_t &dy)
 {
@@ -149,14 +169,14 @@ void Process(Int_t run, Int_t module, Int_t row,
   // ---------------
   // Open input file
   // ---------------
+  cerr << "before load input file" << endl;
   stringstream finstr;
- //finstr << "../Data_module3/r" << run << ".root" << ends;
-  //finstr << "../Data_tmp/r" << run << ".root" << ends;
   finstr << "../Data_2012/r" << run << ".root" << ends;
   TFile *hfp = new TFile(finstr.str().data());
-  //cerr << "Break1" <<endl;
-  cerr << "hfp " << hfp <<endl;
-  ///// Cuts ////////////////////////
+  cerr << "input file:" << finstr.str().data() << endl;
+  cerr << "hfp= " << hfp << endl;
+
+  ///// Cuts2 ////////////////////////
 #if 0
   const Int_t    kNdfCut    = 20;
   const Double_t kChi2Cut   = 300.;
@@ -166,89 +186,59 @@ void Process(Int_t run, Int_t module, Int_t row,
   const Double_t kPhi0MaxCut = 6.27;
 #else
   //const Int_t    kNdfCut    = 155;
-  const Int_t    kNdfCut    = 40;
-  //const Int_t    kNdfCut    = 30;
+  const Int_t    kNdfCut    = 30;
   const Double_t kChi2Cut   = 10000.;
   const Double_t kCpaMinCut = -8.0;
   const Double_t kCpaMaxCut =  2.0;
+  //const Double_t kCpaMinCut = -10.0;
+  //const Double_t kCpaMaxCut =  10.0;
   //const Double_t kPhi0MinCut = 4.64;
   //const Double_t kPhi0MaxCut = 4.70;
   const Int_t knTrksCut = 1;
-  //const Double_t kPhi0MinCut = 4.37;
-  //const Double_t kPhi0MaxCut = 4.44;
-
-  //const Double_t kfi0locMinCut = 4.64;
- // const Double_t kfi0locMaxCut = 4.72;//19985
- 
-  //const Double_t kfi0locMinCut = 4.69;
-  //const Double_t kfi0locMaxCut = 4.76;//20041
-  
-  //const Double_t kchgsumMinCut = 200;
-  //const Double_t kchgsumMaxCut = 1000;
+  const Double_t kPhi0MinCut = -9999;
+  const Double_t kPhi0MaxCut = 9999;
+  //const Double_t kfi0locMinCut = 4.64;//for recomendeed data
+  //const Double_t kfi0locMaxCut = 4.72;
+  //const Double_t kfi0locMinCut = 0;
+  //const Double_t kfi0locMaxCut = 10;
   
   //const Double_t kfi0locMinCut = 4.70;//for 19717
   //const Double_t kfi0locMaxCut = 4.76;
 
+  const Double_t kfi0locMinCut = 4.8;//for 19743
+  const Double_t kfi0locMaxCut = 5.1;
+
   //const Double_t kfi0locMinCut = 4.70;//for 19868
   //const Double_t kfi0locMaxCut = 4.80;
-  
-    //const Double_t kfi0locMinCut = 4.68;//for 19932
-    //const Double_t kfi0locMaxCut = 4.75;
-
-  //const Double_t kfi0locMinCut = 4.36;//for 19895
-  //const Double_t kfi0locMaxCut = 4.45;
-  //const Double_t kfi0locMinCut = 4.36;//for 19895
-  //const Double_t kfi0locMaxCut = 4.40;
-
-  //const Double_t kfi0locMinCut = 4.8;//for 19743
-  //const Double_t kfi0locMaxCut = 5.1;
-
-  //const Double_t kfi0locMinCut = 4;//for 19746
-  //const Double_t kfi0locMaxCut = 5.5;
-
-  //const Double_t kfi0locMinCut = 3;//for 19746
-  //const Double_t kfi0locMaxCut = 7;
-  
-  const Double_t kfi0locMinCut = 4.45;//for 18609
-  const Double_t kfi0locMaxCut = 4.7;
-
+  //const Double_t kchgsumCut = 200;
 #endif
   ///////////////////////////////////
+  cerr << "before drow htmp" << endl;
   //TNtupleD* hPadRes = dynamic_cast<TNtupleD*>(hfp->Get("MyRootFileProcessor/clrs"));
   TNtupleD* hPadRes = static_cast<TNtupleD*>(hfp->Get("MyRootFileProcessor/clrs"));
-  cerr << "Break3" <<endl;
+  cerr << "hPadRes= "<< hPadRes  << endl;
   stringstream cut;
   cut << "module==" << module   << "&&" 
-      << "row=="    << row      << "&&"
-      << "ndf>"  << kNdfCut << "&&"
-      << "chi2<" << kChi2Cut    << "&&"
-   //   << "fi0>"  << kPhi0MinCut << "&&"
-   //   << "fi0<"  << kPhi0MaxCut << "&&"
-      << "fi0loc>"  << kfi0locMinCut << "&&"
-      << "fi0loc<"  << kfi0locMaxCut << "&&"
-      << "cpa>"  << kCpaMinCut  << "&&"
-      << "cpa<"  << kCpaMaxCut  << "&&"
-      << "nTrks<=" << knTrksCut ;
-  //    << "chgsum>" << kchgsumMinCut << "&&"
-   //   << "chgsum<=" << kchgsumMaxCut ;
-  
-  //
-   //  << "ndf>"  << kNdfCut << "&&"
-    //  << "chi2<" << kChi2Cut;
-   //  << "fi0loc>"  << kfi0locMinCut << "&&"
-    //  << "fi0loc<"  << kfi0locMaxCut;
-    //  << "fi0>"  << kPhi0MinCut;
+      << "row=="    << row ;   
+  //    << "ndf>"  << kNdfCut     << "&&"
+  //    << "chi2<" << kChi2Cut    << "&&"
+  //    << "fi0loc>"  << kfi0locMinCut << "&&"
+   //   << "fi0loc<"  << kfi0locMaxCut << "&&"
+  //    << "fi0>"  << kPhi0MinCut << "&&"
   //    << "fi0<"  << kPhi0MaxCut << "&&"
-   //   << "cpa>"  << kCpaMinCut << "&&"
-    //  << "cpa<"  << kCpaMaxCut;
-    //  << "nTrks<=" << knTrksCut ;
-  cerr << "cut" << cut.str().data() <<endl;
-  cerr << "hPadRes" << hPadRes <<endl;
- hPadRes->Draw("normchg:drphi>>htmp(100,-4,4,440,0,1.1)",cut.str().data(),"goff");
-  cerr << "Break2" <<endl;
- // hPadRes->Draw("normchg:drphi>>htmp(100,-4,4,440,0,1.1)");
+  //    << "cpa>"  << kCpaMinCut  << "&&"
+  //    << "cpa<"  << kCpaMaxCut  << "&&"
+     // << "nTrks<=" << knTrksCut << "&&"
+  //    << "nTrks<=" << knTrksCut ;
+    //  << "chgsum>" << kchgsumCut ;
+         cut << ends;
+  //hPadRes->Draw("normchg:drphi>>htmp(100,-4,4,440,0,1.1)",cut.str().data(),"goff");
+  hPadRes->Draw("normchg:drphi>>htmp(100,-4,4,440,0,1.1)",cut.str().data());
+  //hPadRes->Draw("normchg:drphi>>htmp(100,-4,4,440,0,1.1)");
   TH2D *hq = static_cast<TH2D *>(gROOT->FindObject("htmp"));
-  
+  cerr << "after drow htmp" << endl;
+  cerr << "hq= "<<hq << endl;
+
   //hq->FitSlicesY();
   hq->FitSlicesY(0,0,-1,0,"QNRI");
   stringstream hslicestr;
@@ -292,6 +282,8 @@ void Process(Int_t run, Int_t module, Int_t row,
   func.Draw("same");
   last->cd();
 #endif
+
+  hfp->Close();
 }
 
 class dataFile : public TObject
