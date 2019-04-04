@@ -310,8 +310,8 @@ void RootFileProcessor::processEvent( LCEvent * evt ) {
 
       //THelicalTrack helix = static_cast<TKalTrackState>(sitep->GetCurState()).GetHelix();
       const TKalTrackState &curstate = static_cast<TKalTrackState>(sitep->GetCurState());
-      std::cerr << "cuestate = " << (const void *) & curstate << std::endl;
-      curstate.DebugPrint();
+      //std::cerr << "cuestate = " << (const void *) & curstate << std::endl;
+      //curstate.DebugPrint();
       THelicalTrack helix(curstate, sitep->GetPivot(), sitep->GetBfield());
 
       TMatrixD dxdphi(3,1);
