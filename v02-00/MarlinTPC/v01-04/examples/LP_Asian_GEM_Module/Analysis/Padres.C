@@ -4,10 +4,9 @@
 void Process(Int_t run, Int_t module, Int_t row, 
              Double_t &x, Double_t &y, Double_t &dx, Double_t &dy);
 
-void Padres(Int_t module = 3, Int_t row = 18)
+void Padres_auto(Int_t module = 3, Int_t row = 18)
 //void Padres(Int_t module = 0, Int_t row = 17)
 {
-
 
 //-Set Style
   // Axis
@@ -26,23 +25,33 @@ void Padres(Int_t module = 3, Int_t row = 18)
   // -----------
   // Input data
   // -----------
-  const Int_t kNp = 16; //11;
+  const Int_t kNp = 15; //11;
   Double_t xdata[kNp], ydata[kNp], dxdata[kNp], dydata[kNp];
   //    dlen [cm]      5     10     15     20     25     30     35     40     45     50
   //Int_t kRun[] = { 17319, 17367, 17324, 17364, 17327, 17359, 17375, 17356, 17340, 17352}; // B=1T
   //Int_t kRun[] = { 17319, 17367, 17324, 17364, 17327, 17359, 17331, 17356, 17340, 17352}; // B=1T
   //Int_t kRun[] = { 18564, 18563, 18562, 18561, 18552, 18551, 18550, 18549, 18548, 18547}; // B=1T
- //Int_t kRun[] = { 19985, 19984, 19983, 19982, 19981, 19980, 19979, 19978, 19977, 19976, 19975, 19974, 19973, 19972}; // B=1T
- //Int_t kRun[] = { 20041, 20043, 20044, 20045, 20046, 20047, 20048, 20049, 20050, 20051, 20052, 20053, 20054, 20055}; // B=1T
+
+  //2016
+    //straight 
+    //Int_t kRun[] = { 19985, 19984, 19983, 19982, 19981, 19980, 19979, 19978, 19977, 19976, 19975, 19974, 19973, 19972}; // Set1 (http://www-jlc.kek.jp/jlc/ja/elog) kNp =14
+    //Int_t kRun[] = { 19868, 19867, 19866, 19865, 19869, 19864, 19870, 19863, 19862, 19861, 19871, 19860, 19872, 19873, 19874}; // set2(not recomend) kNp =15
+    //Int_t kRun[] = { 19717, 19718, 19719, 19720, 19721, 19722, 19723, 19724, 19725, 19726, 19727, 19728};//Set13 kNp =12 
+    //Int_t kRun[] = { 20041, 20043, 20044, 20045, 20046, 20047, 20048, 20049, 20050, 20051, 20052, 20053, 20054, 20055}; //Set16 FS kNp =14
+    //Int_t kRun[] = { 20074, 20073, 20072, 20071, 20070, 20069, 20068, 20067, 20066, 20065, 20064, 20063, 20062, 20061, 20059, 20058 };//Set17 kNp=16, FS, noemal gain
+   
+ 
+    //angled  
+    //Int_t kRun[] = { 19743, 19742, 19741, 19740, 19739, 19738,19737, 19736, 19735, 19734, 19733, 19732}; // B=1T,with gate phi=10
+    //Int_t kRun[] = { 19895, 19894, 19893, 19892, 19891, 19890, 19889, 19888, 19887, 19886, 19885, 19884, 19883, 19882, 19881}; // B=1T,with gate phi=-20
+    //Int_t kRun[] = { 19746, 19747, 19748, 19749, 19750, 19752, 19753, 19754, 19755, 19756, 19757, 19758}; // B=1T,with gate phi=20
+
+
+//  Int_t kRun[] = { 19895, 19894, 19893, 19892, 19891, 19890, 19889, 19888, 19887, 19886, 19885, 19884, 19883, 19882, 19881}; // B=1T,with gate(not recomend)
+ 
+ //?
  // Int_t kRun[] = { 18609, 18606, 18605, 18601, 18600, 18598, 18597, 18595, 18594, 18592, 18591}; // B=1T
- // Int_t kRun[] = { 19868, 19867, 19866, 19865, 19869, 19864, 19870, 19863, 19862, 19861, 19871, 19860, 19872, 19873, 19874}; // B=1T,with gate(not recomend)
   // Int_t kRun[] = { 19816, 19817, 19818, 19819, 19820, 19821, 19822, 19824, 19825, 19826, 19827, 19828};//non reco(0T) 
-   //Int_t kRun[] = { 19717, 19718, 19719, 19720, 19721, 19722, 19723, 19724, 19725, 19726, 19727, 19728};//non reco2
-   //Int_t kRun[] = { 19932, 19928, 19929, 19931, 19930, 19933, 19934, 19935, 19936, 19937, 19938, 19939, 19940, 19941, 19942};//Vgate=0
-  // Int_t kRun[] = {19895, 19894, 19893, 19892, 19891, 19890, 19889, 19888, 19887, 19886, 19885, 19884, 19883, 19882, 19881 };//phi=-20
-   //Int_t kRun[] = {19746, 19747, 19748, 19749, 19750, 19752, 19753, 19754, 19755, 19756, 19757, 19758};//phi=20
-   //Int_t kRun[] = {19743, 19742, 19741, 19740, 19739, 19738, 19737, 19736, 19735, 19734, 19733, 19732 };//phi=10
-   Int_t kRun[] = {20074, 20073, 20072, 20071, 20070, 20069, 20068, 20067, 20066, 20065, 20064, 20063, 20062, 20061, 200591, 20058 };//16, FS, noemal gain
 
   // ---------------
   // Loop over runs
@@ -135,7 +144,9 @@ void Padres(Int_t module = 3, Int_t row = 18)
 void Process(Int_t run, Int_t module, Int_t row, 
              Double_t &x, Double_t &y, Double_t &dx, Double_t &dy)
 {
-  int kRun = 2;
+  int year =2016;
+  cerr<< "year=" << year <<endl;
+
   // ---------------
   // Reset Run Info.
   // ---------------
@@ -154,8 +165,11 @@ void Process(Int_t run, Int_t module, Int_t row,
   // Open input file
   // ---------------
   stringstream finstr;
-      finstr << "../Data_module3/r" << run << ".root" << ends;
-  //    finstr << "../Data_2012/r" << run << ".root" << ends;
+  if(year==2016 && module==3){
+      finstr << "../Data_module3/r" << run << ".root" << ends;}
+  if(year==2012){
+      finstr << "../Data_2012/r" << run << ".root" << ends;}
+  else{finstr << "../Data_tmp/r" << run << ".root" << ends;}
   TFile *hfp = new TFile(finstr.str().data());
   //cerr << "Break1" <<endl;
   cerr << "hfp " << hfp <<endl;
@@ -178,19 +192,34 @@ void Process(Int_t run, Int_t module, Int_t row,
   //const Double_t kPhi0MaxCut = 4.70;
   const Int_t knTrksCut = 1;
 
-   //   const Double_t kfi0locMinCut = 4.64;
-     // const Double_t kfi0locMaxCut = 4.72;//19985
-     //  const Double_t kfi0locMinCut = 4.69;
-      // const Double_t kfi0locMaxCut = 4.76;//20041
+   Double_t kfi0locMinCut = 0;
+   Double_t kfi0locMaxCut = 0;//19985
+  
+   cerr << "Run=" << run << endl;
+
+  if(run<=19985 && run>=19972){
+     kfi0locMinCut = 4.64;
+     kfi0locMaxCut = 4.72;//19985
+  }
+  if(run==20041){
+     kfi0locMinCut = 4.69;
+     kfi0locMaxCut = 4.76;//20041
+  }
   //const Double_t kchgsumMinCut = 200;
   //const Double_t kchgsumMaxCut = 1000;
+ // if(kRun[0]==19985){ 
      //  const Double_t kfi0locMinCut = 4.70;//for 19717
      //  const Double_t kfi0locMaxCut = 4.76;
+  //}
 
-      const Double_t kfi0locMinCut = 4.0;//for 20074
-      const Double_t kfi0locMaxCut = 5.0;
-      // const Double_t kPhi0MinCut = 4.37;
-      // const Double_t kPhi0MaxCut = 4.44;
+  if(run<=20074 && run>=20058){
+      kfi0locMinCut = 4.67;//for 20074
+      kfi0locMaxCut = 4.75;
+  }
+  //else
+  //    kPhi0MinCut = 4.37;
+  //    kPhi0MaxCut = 4.44;
+  //}
 
   //const Double_t kfi0locMinCut = 4.70;//for 19868
   //const Double_t kfi0locMaxCut = 4.80;

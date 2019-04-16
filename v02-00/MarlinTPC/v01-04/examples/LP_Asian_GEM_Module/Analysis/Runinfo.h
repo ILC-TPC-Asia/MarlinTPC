@@ -348,7 +348,7 @@ private:
     RegisterRun(19874, 1, 5,doff2016+ 55);
 
    //Run set 3
-    RegisterRun(19948, 0, 5, doff2016+);
+    RegisterRun(19948, 0, 5, doff2016+0);
    
    //Run set 4
     RegisterRun(19932, 0, 5,doff2016+1.25);
@@ -368,10 +368,10 @@ private:
     RegisterRun(19942, 0, 5,doff2016+55);
 
    //Run set 5
-    RegisterRun(19902, 1, 5,doff2016+);
+    RegisterRun(19902, 1, 5,doff2016+0);
 
    //Run set 6
-    RegisterRun(19901, 1, 5,doff2016+);
+    RegisterRun(19901, 1, 5,doff2016+0);
 
    //Run set 7
     RegisterRun(19895, 1, 5, doff2016+1.25);
@@ -391,13 +391,13 @@ private:
     RegisterRun(19881, 1, 5, doff2016+55);
   
    //Run set 8
-    RegisterRun(19810, 0, 5, doff2016+);
+    RegisterRun(19810, 0, 5, doff2016+0);
 
    //Run set 9
-    RegisterRun(19782, 0, 5, doff2016+);
+    RegisterRun(19782, 0, 5, doff2016+0);
    
    //Run set 10
-    RegisterRun(19772, 1, 5, doff2016+);
+    RegisterRun(19772, 1, 5, doff2016+0);
 
    //Run set 11
     RegisterRun(19746, 1, 5, doff2016+2.5);
@@ -445,10 +445,10 @@ private:
 
  
    //Run set 14
-    RegisterRun(19849, 0, 5, doff2016+);
+    RegisterRun(19849, 0, 5, doff2016+0);
     
    //Run set 15
-    RegisterRun(19852, 0, 5, doff2016+);
+    RegisterRun(19852, 0, 5, doff2016+0);
     
    //Run set 16
     RegisterRun(20042, 1, 5,doff2016+1.25);
@@ -489,31 +489,31 @@ private:
     RegisterRun(20058, 1, 5, doff2016+56.8);
     
    //Run set 18
-    RegisterRun(20081, 1, 5, doff2016+);
+    RegisterRun(20081, 1, 5, doff2016+0);
     
    //Run set 19
-    RegisterRun(20011, 1, 5, doff2016+);
+    RegisterRun(20011, 1, 5, doff2016+0);
     
    //Run set 20
-    RegisterRun(20108, 1, 5, doff2016+);
+    RegisterRun(20108, 1, 5, doff2016+0);
     
    //Run set 21
-    RegisterRun(20124, 1, 5, doff2016+);
+    RegisterRun(20124, 1, 5, doff2016+0);
     
    //Run set 22
-    RegisterRun(20127, 1, 5, doff2016+);
+    RegisterRun(20127, 1, 5, doff2016+0);
     
    //Run set 23
-    RegisterRun(20129, 1, 5, doff2016+);
+    RegisterRun(20129, 1, 5, doff2016+0);
    
    //Run set 24
-    RegisterRun(20160, 1, 5, doff2016+);
+    RegisterRun(20160, 1, 5, doff2016+0);
 
    //Run set 25
-    RegisterRun(20162, 1, 5, doff2016+);
+    RegisterRun(20162, 1, 5, doff2016+0);
 
    //Run set 26
-    RegisterRun(19648, 1, 5, doff2016+);
+    RegisterRun(19648, 1, 5, doff2016+0);
 
 
 
