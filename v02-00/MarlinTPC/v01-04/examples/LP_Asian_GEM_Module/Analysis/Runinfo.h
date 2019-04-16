@@ -311,156 +311,228 @@ private:
     RegisterRun(18744, 1, 5, 50);
 
   //2016
-    RegisterRun(19868, 1, 5, 0.75);
-    RegisterRun(19867, 1, 5, 1.25);
-    RegisterRun(19866, 1, 5, 2.5);
-    RegisterRun(19865, 1, 5, 5);
-    RegisterRun(19869, 1, 5, 7.5);
-    RegisterRun(19864, 1, 5, 10);
-    RegisterRun(19870, 1, 5, 12.5);
-    RegisterRun(19863, 1, 5, 15);
-    RegisterRun(19862, 1, 5, 20);
-    RegisterRun(19861, 1, 5, 25);
-    RegisterRun(19871, 1, 5, 30);
-    RegisterRun(19860, 1, 5, 35);
-    RegisterRun(19872, 1, 5, 40);
-    RegisterRun(19873, 1, 5, 50);
-    RegisterRun(19874, 1, 5, 55);
-
-    RegisterRun(19932, 1, 5, 1.25);
-    RegisterRun(19928, 1, 5, 2.5);
-    RegisterRun(19929, 1, 5, 5);
-    RegisterRun(19931, 1, 5, 7.5);
-    RegisterRun(19930, 1, 5, 10);
-    RegisterRun(19933, 1, 5, 12.5);
-    RegisterRun(19934, 1, 5, 15);
-    RegisterRun(19935, 1, 5, 20);
-    RegisterRun(19936, 1, 5, 25);
-    RegisterRun(19937, 1, 5, 30);
-    RegisterRun(19938, 1, 5, 35);
-    RegisterRun(19939, 1, 5, 40);
-    RegisterRun(19940, 1, 5, 45);
-    RegisterRun(19941, 1, 5, 50);
-    RegisterRun(19942, 1, 5, 55);
-
-    RegisterRun(19985, 1, 5, 2.5);
-    RegisterRun(19984, 1, 5, 5);
-    RegisterRun(19983, 1, 5, 7.5);
-    RegisterRun(19982, 1, 5, 10);
-    RegisterRun(19981, 1, 5, 12.5);
-    RegisterRun(19980, 1, 5, 15);
-    RegisterRun(19979, 1, 5, 20);
-    RegisterRun(19978, 1, 5, 25);
-    RegisterRun(19977, 1, 5, 30);
-    RegisterRun(19976, 1, 5, 35);
-    RegisterRun(19975, 1, 5, 40);
-    RegisterRun(19974, 1, 5, 45);
-    RegisterRun(19973, 1, 5, 50);
-    RegisterRun(19972, 1, 5, 55);
-
-    RegisterRun(20042, 1, 5, 1.25);
-    RegisterRun(20041, 1, 5, 2.5);
-    RegisterRun(20043, 1, 5, 5);
-    RegisterRun(20044, 1, 5, 7.5);
-    RegisterRun(20045, 1, 5, 10);
-    RegisterRun(20046, 1, 5, 12.5);
-    RegisterRun(20047, 1, 5, 15);
-    RegisterRun(20048, 1, 5, 20);
-    RegisterRun(20049, 1, 5, 25);
-    RegisterRun(20050, 1, 5, 30);
-    RegisterRun(20051, 1, 5, 35);
-    RegisterRun(20052, 1, 5, 40);
-    RegisterRun(20053, 1, 5, 45);
-    RegisterRun(20054, 1, 5, 50);
-    RegisterRun(20055, 1, 5, 55);
-    RegisterRun(20056, 1, 5, 55);
-    RegisterRun(20057, 1, 5, 56.8);
-
-    RegisterRun(19816, 0, 5, 2.5);
-    RegisterRun(19817, 0, 5, 5);
-    RegisterRun(19818, 0, 5, 10);
-    RegisterRun(19819, 0, 5, 15);
-    RegisterRun(19820, 0, 5, 20);
-    RegisterRun(19821, 0, 5, 25);
-    RegisterRun(19822, 0, 5, 30);
-    RegisterRun(19824, 0, 5, 35);
-    RegisterRun(19825, 0, 5, 40);
-    RegisterRun(19826, 0, 5, 45);
-    RegisterRun(19827, 0, 5, 50);
-    RegisterRun(19828, 0, 5, 55);
+    double doff2016 = 1.456;//(yumia) drift length offset decided using 19985 set(Best data set)
+                            // cathode hit 19971
     
-    RegisterRun(19717, 1, 5, 2.5);
-    RegisterRun(19718, 1, 5, 5);
-    RegisterRun(19719, 1, 5, 10);
-    RegisterRun(19720, 1, 5, 15);
-    RegisterRun(19721, 1, 5, 20);
-    RegisterRun(19722, 1, 5, 25);
-    RegisterRun(19723, 1, 5, 30);
-    RegisterRun(19724, 1, 5, 35);
-    RegisterRun(19725, 1, 5, 40);
-    RegisterRun(19726, 1, 5, 45);
-    RegisterRun(19727, 1, 5, 50);
-    RegisterRun(19728, 1, 5, 55);
+   //Run set 1 (http://www-jlc.kek.jp/jlc/ja/elog)
+    RegisterRun(19985, 1, 5,doff2016+2.5);
+    RegisterRun(19984, 1, 5,doff2016+5);
+    RegisterRun(19983, 1, 5,doff2016+7.5);
+    RegisterRun(19982, 1, 5,doff2016+10);
+    RegisterRun(19981, 1, 5,doff2016+12.5);
+    RegisterRun(19980, 1, 5,doff2016+15);
+    RegisterRun(19979, 1, 5,doff2016+20);
+    RegisterRun(19978, 1, 5,doff2016+25);
+    RegisterRun(19977, 1, 5,doff2016+30);
+    RegisterRun(19976, 1, 5,doff2016+35);
+    RegisterRun(19975, 1, 5,doff2016+40);
+    RegisterRun(19974, 1, 5,doff2016+45);
+    RegisterRun(19973, 1, 5,doff2016+50);
+    RegisterRun(19972, 1, 5,doff2016+55);
 
-    RegisterRun(19895, 1, 5, 1.25);
-    RegisterRun(19894, 1, 5, 2.5);
-    RegisterRun(19893, 1, 5, 5);
-    RegisterRun(19892, 1, 5, 7.5);
-    RegisterRun(19891, 1, 5, 10);
-    RegisterRun(19890, 1, 5, 12.5);
-    RegisterRun(19889, 1, 5, 15);
-    RegisterRun(19888, 1, 5, 20);
-    RegisterRun(19887, 1, 5, 25);
-    RegisterRun(19886, 1, 5, 30);
-    RegisterRun(19885, 1, 5, 35);
-    RegisterRun(19884, 1, 5, 40);
-    RegisterRun(19883, 1, 5, 45);
-    RegisterRun(19882, 1, 5, 50);
-    RegisterRun(19881, 1, 5, 55);
+   //Run set 2
+    RegisterRun(19868, 1, 5,doff2016+ 0.75);
+    RegisterRun(19867, 1, 5,doff2016+ 1.25);
+    RegisterRun(19866, 1, 5,doff2016+ 2.5);
+    RegisterRun(19865, 1, 5,doff2016+ 5);
+    RegisterRun(19869, 1, 5,doff2016+ 7.5);
+    RegisterRun(19864, 1, 5,doff2016+ 10);
+    RegisterRun(19870, 1, 5,doff2016+ 12.5);
+    RegisterRun(19863, 1, 5,doff2016+ 15);
+    RegisterRun(19862, 1, 5,doff2016+ 20);
+    RegisterRun(19861, 1, 5,doff2016+ 25);
+    RegisterRun(19871, 1, 5,doff2016+ 30);
+    RegisterRun(19860, 1, 5,doff2016+ 35);
+    RegisterRun(19872, 1, 5,doff2016+ 40);
+    RegisterRun(19873, 1, 5,doff2016+ 50);
+    RegisterRun(19874, 1, 5,doff2016+ 55);
+
+   //Run set 3
+    RegisterRun(19948, 0, 5, doff2016+);
+   
+   //Run set 4
+    RegisterRun(19932, 0, 5,doff2016+1.25);
+    RegisterRun(19928, 0, 5,doff2016+2.5);
+    RegisterRun(19929, 0, 5,doff2016+5);
+    RegisterRun(19931, 0, 5,doff2016+7.5);
+    RegisterRun(19930, 0, 5,doff2016+10);
+    RegisterRun(19933, 0, 5,doff2016+12.5);
+    RegisterRun(19934, 0, 5,doff2016+15);
+    RegisterRun(19935, 0, 5,doff2016+20);
+    RegisterRun(19936, 0, 5,doff2016+25);
+    RegisterRun(19937, 0, 5,doff2016+30);
+    RegisterRun(19938, 0, 5,doff2016+35);
+    RegisterRun(19939, 0, 5,doff2016+40);
+    RegisterRun(19940, 0, 5,doff2016+45);
+    RegisterRun(19941, 0, 5,doff2016+50);
+    RegisterRun(19942, 0, 5,doff2016+55);
+
+   //Run set 5
+    RegisterRun(19902, 1, 5,doff2016+);
+
+   //Run set 6
+    RegisterRun(19901, 1, 5,doff2016+);
+
+   //Run set 7
+    RegisterRun(19895, 1, 5, doff2016+1.25);
+    RegisterRun(19894, 1, 5, doff2016+2.5);
+    RegisterRun(19893, 1, 5, doff2016+5);
+    RegisterRun(19892, 1, 5, doff2016+7.5);
+    RegisterRun(19891, 1, 5, doff2016+10);
+    RegisterRun(19890, 1, 5, doff2016+12.5);
+    RegisterRun(19889, 1, 5, doff2016+15);
+    RegisterRun(19888, 1, 5, doff2016+20);
+    RegisterRun(19887, 1, 5, doff2016+25);
+    RegisterRun(19886, 1, 5, doff2016+30);
+    RegisterRun(19885, 1, 5, doff2016+35);
+    RegisterRun(19884, 1, 5, doff2016+40);
+    RegisterRun(19883, 1, 5, doff2016+45);
+    RegisterRun(19882, 1, 5, doff2016+50);
+    RegisterRun(19881, 1, 5, doff2016+55);
   
-    RegisterRun(19746, 1, 5, 2.5);
-    RegisterRun(19747, 1, 5, 5);
-    RegisterRun(19748, 1, 5, 10);
-    RegisterRun(19749, 1, 5, 15);
-    RegisterRun(19750, 1, 5, 20);
-    RegisterRun(19752, 1, 5, 25);
-    RegisterRun(19753, 1, 5, 30);
-    RegisterRun(19754, 1, 5, 35);
-    RegisterRun(19755, 1, 5, 40);
-    RegisterRun(19756, 1, 5, 45);
-    RegisterRun(19757, 1, 5, 50);
-    RegisterRun(19758, 1, 5, 55);
+   //Run set 8
+    RegisterRun(19810, 0, 5, doff2016+);
+
+   //Run set 9
+    RegisterRun(19782, 0, 5, doff2016+);
+   
+   //Run set 10
+    RegisterRun(19772, 1, 5, doff2016+);
+
+   //Run set 11
+    RegisterRun(19746, 1, 5, doff2016+2.5);
+    RegisterRun(19747, 1, 5, doff2016+5);
+    RegisterRun(19748, 1, 5, doff2016+10);
+    RegisterRun(19749, 1, 5, doff2016+15);
+    RegisterRun(19750, 1, 5, doff2016+20);
+    RegisterRun(19752, 1, 5, doff2016+25);
+    RegisterRun(19753, 1, 5, doff2016+30);
+    RegisterRun(19754, 1, 5, doff2016+35);
+    RegisterRun(19755, 1, 5, doff2016+40);
+    RegisterRun(19756, 1, 5, doff2016+45);
+    RegisterRun(19757, 1, 5, doff2016+50);
+    RegisterRun(19758, 1, 5, doff2016+55);
+    
+    
+   //Run set 12
+    RegisterRun(19743, 1, 5, doff2016+2.5);
+    RegisterRun(19742, 1, 5, doff2016+5);
+    RegisterRun(19741, 1, 5, doff2016+10);
+    RegisterRun(19740, 1, 5, doff2016+15);
+    RegisterRun(19739, 1, 5, doff2016+20);
+    RegisterRun(19738, 1, 5, doff2016+25);
+    RegisterRun(19737, 1, 5, doff2016+30);
+    RegisterRun(19736, 1, 5, doff2016+35);
+    RegisterRun(19735, 1, 5, doff2016+40);
+    RegisterRun(19734, 1, 5, doff2016+45);
+    RegisterRun(19733, 1, 5, doff2016+50);
+    RegisterRun(19732, 1, 5, doff2016+55);
   
-    RegisterRun(19743, 1, 5, 2.5);
-    RegisterRun(19742, 1, 5, 5);
-    RegisterRun(19741, 1, 5, 10);
-    RegisterRun(19740, 1, 5, 15);
-    RegisterRun(19739, 1, 5, 20);
-    RegisterRun(19738, 1, 5, 25);
-    RegisterRun(19737, 1, 5, 30);
-    RegisterRun(19736, 1, 5, 35);
-    RegisterRun(19735, 1, 5, 40);
-    RegisterRun(19734, 1, 5, 45);
-    RegisterRun(19733, 1, 5, 50);
-    RegisterRun(19732, 1, 5, 55);
-  
-    RegisterRun(20073, 1, 5, 1.25);
-    RegisterRun(20073, 1, 5, 2.5);
-    RegisterRun(20072, 1, 5, 5);
-    RegisterRun(20071, 1, 5, 7.5);
-    RegisterRun(20070, 1, 5, 10);
-    RegisterRun(20069, 1, 5, 12.5);
-    RegisterRun(20068, 1, 5, 15);
-    RegisterRun(20067, 1, 5, 20);
-    RegisterRun(20066, 1, 5, 25);
-    RegisterRun(20065, 1, 5, 30);
-    RegisterRun(20064, 1, 5, 35);
-    RegisterRun(20063, 1, 5, 40);
-    RegisterRun(20062, 1, 5, 45);
-    RegisterRun(20061, 1, 5, 50);
-    RegisterRun(200591, 1, 5, 55);
-    RegisterRun(20058, 1, 5, 56.8);
-  
+ 
+   //Run set 13
+    RegisterRun(19717, 1, 5, doff2016+2.5);
+    RegisterRun(19718, 1, 5, doff2016+5);
+    RegisterRun(19719, 1, 5, doff2016+10);
+    RegisterRun(19720, 1, 5, doff2016+15);
+    RegisterRun(19721, 1, 5, doff2016+20);
+    RegisterRun(19722, 1, 5, doff2016+25);
+    RegisterRun(19723, 1, 5, doff2016+30);
+    RegisterRun(19724, 1, 5, doff2016+35);
+    RegisterRun(19725, 1, 5, doff2016+40);
+    RegisterRun(19726, 1, 5, doff2016+45);
+    RegisterRun(19727, 1, 5, doff2016+50);
+    RegisterRun(19728, 1, 5, doff2016+55);
+
+ 
+   //Run set 14
+    RegisterRun(19849, 0, 5, doff2016+);
+    
+   //Run set 15
+    RegisterRun(19852, 0, 5, doff2016+);
+    
+   //Run set 16
+    RegisterRun(20042, 1, 5,doff2016+1.25);
+    RegisterRun(20041, 1, 5,doff2016+2.5);
+    RegisterRun(20043, 1, 5,doff2016+5);
+    RegisterRun(20044, 1, 5,doff2016+7.5);
+    RegisterRun(20045, 1, 5,doff2016+10);
+    RegisterRun(20046, 1, 5,doff2016+12.5);
+    RegisterRun(20047, 1, 5,doff2016+15);
+    RegisterRun(20048, 1, 5,doff2016+20);
+    RegisterRun(20049, 1, 5,doff2016+25);
+    RegisterRun(20050, 1, 5,doff2016+30);
+    RegisterRun(20051, 1, 5,doff2016+35);
+    RegisterRun(20052, 1, 5,doff2016+40);
+    RegisterRun(20053, 1, 5,doff2016+45);
+    RegisterRun(20054, 1, 5,doff2016+50);
+    RegisterRun(20055, 1, 5,doff2016+55);
+    RegisterRun(20056, 1, 5,doff2016+55);
+    RegisterRun(20057, 1, 5,doff2016+56.8);
+
+   
+   //Run set 17
+    RegisterRun(20074, 1, 5, doff2016+1.25);
+    RegisterRun(20073, 1, 5, doff2016+2.5);
+    RegisterRun(20072, 1, 5, doff2016+5);
+    RegisterRun(20071, 1, 5, doff2016+7.5);
+    RegisterRun(20070, 1, 5, doff2016+10);
+    RegisterRun(20069, 1, 5, doff2016+12.5);
+    RegisterRun(20068, 1, 5, doff2016+15);
+    RegisterRun(20067, 1, 5, doff2016+20);
+    RegisterRun(20066, 1, 5, doff2016+25);
+    RegisterRun(20065, 1, 5, doff2016+30);
+    RegisterRun(20064, 1, 5, doff2016+35);
+    RegisterRun(20063, 1, 5, doff2016+40);
+    RegisterRun(20062, 1, 5, doff2016+45);
+    RegisterRun(20061, 1, 5, doff2016+50);
+    RegisterRun(200591, 1, 5, doff2016+55);
+    RegisterRun(20058, 1, 5, doff2016+56.8);
+    
+   //Run set 18
+    RegisterRun(20081, 1, 5, doff2016+);
+    
+   //Run set 19
+    RegisterRun(20011, 1, 5, doff2016+);
+    
+   //Run set 20
+    RegisterRun(20108, 1, 5, doff2016+);
+    
+   //Run set 21
+    RegisterRun(20124, 1, 5, doff2016+);
+    
+   //Run set 22
+    RegisterRun(20127, 1, 5, doff2016+);
+    
+   //Run set 23
+    RegisterRun(20129, 1, 5, doff2016+);
+   
+   //Run set 24
+    RegisterRun(20160, 1, 5, doff2016+);
+
+   //Run set 25
+    RegisterRun(20162, 1, 5, doff2016+);
+
+   //Run set 26
+    RegisterRun(19648, 1, 5, doff2016+);
+
+
+
+   //?
+    RegisterRun(19816, 0, 5, doff2016+2.5);
+    RegisterRun(19817, 0, 5, doff2016+5);
+    RegisterRun(19818, 0, 5, doff2016+10);
+    RegisterRun(19819, 0, 5, doff2016+15);
+    RegisterRun(19820, 0, 5, doff2016+20);
+    RegisterRun(19821, 0, 5, doff2016+25);
+    RegisterRun(19822, 0, 5, doff2016+30);
+    RegisterRun(19824, 0, 5, doff2016+35);
+    RegisterRun(19825, 0, 5, doff2016+40);
+    RegisterRun(19826, 0, 5, doff2016+45);
+    RegisterRun(19827, 0, 5, doff2016+50);
+    RegisterRun(19828, 0, 5, doff2016+55);
+    
+   
+ 
   }
 
 //private:
