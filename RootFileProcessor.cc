@@ -316,6 +316,7 @@ void RootFileProcessor::processEvent( LCEvent * evt ) {
 
       TMatrixD dxdphi(3,1);
       dxdphi = helix.CalcDxDphi(0.); //hit点でのhelixの接線ベクトル
+      if (cpa > 0.) dxdphi *= -1.;
       TVector3 tanv(dxdphi[0][0], dxdphi[1][0], 0.);
 
       TVector3 extprod = (tanv.Unit()).Cross(mctoxv.Unit());
@@ -376,6 +377,7 @@ void RootFileProcessor::processEvent( LCEvent * evt ) {
         _clrs->fill( 9 , tnl     ) ;
         _clrs->fill( 10 , nTrks     ) ;
         _clrs->fill( 11 , fi0loc     ) ;
+        _clrs->fill( 12 , incidentphi ) ;
 
 	_clrs->addRow() ;
 
@@ -457,6 +459,9 @@ void RootFileProcessor::setNtuple() {
   _clrsItemType.push_back("int");
 
   _clrsItemNames.push_back("fi0loc");
+  _clrsItemType.push_back("double");
+
+  _clrsItemNames.push_back("incidentphi");
   _clrsItemType.push_back("double");
 
   _hitsItemNames.push_back("serialrow");
