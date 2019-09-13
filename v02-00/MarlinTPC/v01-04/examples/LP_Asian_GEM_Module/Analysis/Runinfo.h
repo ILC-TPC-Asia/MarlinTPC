@@ -33,6 +33,74 @@ public:
     if (fRunMap.find(run) == fRunMap.end()) return 1.e10;
     else                                    return fRunMap[run].getMomentum();
   }
+  
+  inline double GetPhi0locMinCut(int run)
+  { 
+      Double_t fi0locMinCut = 0;
+ 
+    if (run<=19987 && run>=19972) {
+       fi0locMinCut = 4.64;
+    }
+    if(run>=20041) {
+       fi0locMinCut = 4.69;
+    }
+    if(run>=19717 && run <=19728) {
+       fi0locMinCut = 4.70;
+    }
+    if(run>=19666 && run <=19678) {
+       fi0locMinCut = 4.70;
+    }
+    
+    return fi0locMinCut;
+  }
+ 
+  inline double GetPhi0locMaxCut(int run)
+  { 
+      Double_t fi0locMaxCut = 0;//inithialize 
+ 
+    if (run<=19987 && run>=19972) {
+       fi0locMaxCut = 4.72;
+    }
+    if(run>=20041) {
+       fi0locMaxCut = 4.76;//20041
+    }
+    if(run>=19717 && run <=19728) {
+       fi0locMaxCut = 4.76;//20041
+    }
+    if(run>=19666 && run <=19678) {
+       fi0locMaxCut = 4.8;//20041
+    }
+    return fi0locMaxCut;
+  }
+
+  inline double GetCpaMinCut(int run)
+  { 
+      Double_t CpaMinCut = 0;//inithialize 
+  	  CpaMinCut = -4;
+    return CpaMinCut;
+  }
+
+  inline double GetCpaMaxCut(int run)
+  { 
+      Double_t CpaMaxCut = 0;//inithialize 
+  	  CpaMaxCut = 5;
+    return CpaMaxCut;
+  }
+
+  inline double GetIncidentphiMinCut(int run)
+  { 
+      Double_t incidentfiMinCut = 0;//inithialize 
+  	  incidentfiMinCut = -0.03;//1 sigma:0.075 * 4 sigma
+    return incidentfiMinCut;
+  }
+
+  inline double GetIncidentphiMaxCut(int run)
+  { 
+      Double_t incidentfiMaxCut = 0;//inithialize 
+  	  incidentfiMaxCut = 0.03;//1 sigma:0.075 * 4 sigma
+    return incidentfiMaxCut;
+  }
+
 
   // ---------
   // Utility
@@ -311,10 +379,14 @@ private:
     RegisterRun(18744, 1, 5, 50);
 
   //2016
-    double doff2016 = 1.456;//(yumia) drift length offset decided using 19985 set(Best data set)
-                            // cathode hit 19971
-    
+  //  double doff2016_1 = 0.52;//(yumia) drift length offset for data 19717 to 19865
+   // double doff2016_2 = 0.52;//(yumia) drift length offset for data 19866 to 19916
+    double doff2016 = 0.52;//(yumia) drift length offset for data with gate decided using 19985 set(Best data set)
+    double doff2016wo = 0.61;//(yumia) drift length offset for data without gate decided using  set
+                            // cathode hit 
+
    //Run set 1 (http://www-jlc.kek.jp/jlc/ja/elog)
+    RegisterRun(19987, 1, 5,doff2016+1.25);
     RegisterRun(19985, 1, 5,doff2016+2.5);
     RegisterRun(19984, 1, 5,doff2016+5);
     RegisterRun(19983, 1, 5,doff2016+7.5);
@@ -336,13 +408,13 @@ private:
     RegisterRun(19866, 1, 5,doff2016+ 2.5);
     RegisterRun(19865, 1, 5,doff2016+ 5);
     RegisterRun(19869, 1, 5,doff2016+ 7.5);
-    RegisterRun(19864, 1, 5,doff2016+ 10);
+    RegisterRun(19864, 1, 5,doff2016+ 10);//
     RegisterRun(19870, 1, 5,doff2016+ 12.5);
-    RegisterRun(19863, 1, 5,doff2016+ 15);
-    RegisterRun(19862, 1, 5,doff2016+ 20);
-    RegisterRun(19861, 1, 5,doff2016+ 25);
+    RegisterRun(19863, 1, 5,doff2016+ 15);//
+    RegisterRun(19862, 1, 5,doff2016+ 20);//
+    RegisterRun(19861, 1, 5,doff2016+ 25);//
     RegisterRun(19871, 1, 5,doff2016+ 30);
-    RegisterRun(19860, 1, 5,doff2016+ 35);
+    RegisterRun(19860, 1, 5,doff2016+ 35);//
     RegisterRun(19872, 1, 5,doff2016+ 40);
     RegisterRun(19873, 1, 5,doff2016+ 50);
     RegisterRun(19874, 1, 5,doff2016+ 55);
@@ -451,23 +523,23 @@ private:
     RegisterRun(19852, 0, 5, doff2016+0);
     
    //Run set 16
-    RegisterRun(20042, 1, 5,doff2016+1.25);
-    RegisterRun(20041, 1, 5,doff2016+2.5);
-    RegisterRun(20043, 1, 5,doff2016+5);
-    RegisterRun(20044, 1, 5,doff2016+7.5);
-    RegisterRun(20045, 1, 5,doff2016+10);
-    RegisterRun(20046, 1, 5,doff2016+12.5);
-    RegisterRun(20047, 1, 5,doff2016+15);
-    RegisterRun(20048, 1, 5,doff2016+20);
-    RegisterRun(20049, 1, 5,doff2016+25);
-    RegisterRun(20050, 1, 5,doff2016+30);
-    RegisterRun(20051, 1, 5,doff2016+35);
-    RegisterRun(20052, 1, 5,doff2016+40);
-    RegisterRun(20053, 1, 5,doff2016+45);
-    RegisterRun(20054, 1, 5,doff2016+50);
-    RegisterRun(20055, 1, 5,doff2016+55);
-    RegisterRun(20056, 1, 5,doff2016+55);
-    RegisterRun(20057, 1, 5,doff2016+56.8);
+    RegisterRun(20042, 1, 5,doff2016wo+1.25);
+    RegisterRun(20041, 1, 5,doff2016wo+2.5);
+    RegisterRun(20043, 1, 5,doff2016wo+5);
+    RegisterRun(20044, 1, 5,doff2016wo+7.5);
+    RegisterRun(20045, 1, 5,doff2016wo+10);
+    RegisterRun(20046, 1, 5,doff2016wo+12.5);
+    RegisterRun(20047, 1, 5,doff2016wo+15);
+    RegisterRun(20048, 1, 5,doff2016wo+20);
+    RegisterRun(20049, 1, 5,doff2016wo+25);
+    RegisterRun(20050, 1, 5,doff2016wo+30);
+    RegisterRun(20051, 1, 5,doff2016wo+35);
+    RegisterRun(20052, 1, 5,doff2016wo+40);
+    RegisterRun(20053, 1, 5,doff2016wo+45);
+    RegisterRun(20054, 1, 5,doff2016wo+50);
+    RegisterRun(20055, 1, 5,doff2016wo+55);
+    RegisterRun(20056, 1, 5,doff2016wo+55);
+    RegisterRun(20057, 1, 5,doff2016wo+56.8);
 
    
    //Run set 17
@@ -485,7 +557,7 @@ private:
     RegisterRun(20063, 1, 5, doff2016+40);
     RegisterRun(20062, 1, 5, doff2016+45);
     RegisterRun(20061, 1, 5, doff2016+50);
-    RegisterRun(200591, 1, 5, doff2016+55);
+    RegisterRun(20059, 1, 5, doff2016+55);
     RegisterRun(20058, 1, 5, doff2016+56.8);
     
    //Run set 18
@@ -514,8 +586,37 @@ private:
 
    //Run set 26
     RegisterRun(19648, 1, 5, doff2016+0);
-
-
+   
+   //for calibration
+    RegisterRun(19680, 1, 5, doff2016+0);
+    RegisterRun(19678, 1, 5, doff2016+2.6);
+    RegisterRun(19677, 1, 5, doff2016+4.6);
+    RegisterRun(19676, 1, 5, doff2016+9.6);
+    RegisterRun(19675, 1, 5, doff2016+14.6);
+    RegisterRun(19674, 1, 5, doff2016+19.6);
+    RegisterRun(19673, 1, 5, doff2016+25);
+    RegisterRun(19672, 1, 5, doff2016+30);
+    RegisterRun(19671, 1, 5, doff2016+35);
+    RegisterRun(19670, 1, 5, doff2016+40);
+    RegisterRun(19669, 1, 5, doff2016+45);
+    RegisterRun(19668, 1, 5, doff2016+50);
+    RegisterRun(19667, 1, 5, doff2016+55);
+    RegisterRun(19666, 1, 5, doff2016+56.8);
+ 
+    RegisterRun(19668, 1, 5, doff2016+0);
+    RegisterRun(19678, 1, 5, doff2016+2.6);
+    RegisterRun(19677, 1, 5, doff2016+4.6);
+    RegisterRun(19676, 1, 5, doff2016+9.6);
+    RegisterRun(19675, 1, 5, doff2016+14.6);
+    RegisterRun(19674, 1, 5, doff2016+19.6);
+    RegisterRun(19673, 1, 5, doff2016+25);
+    RegisterRun(19672, 1, 5, doff2016+30);
+    RegisterRun(19671, 1, 5, doff2016+35);
+    RegisterRun(19670, 1, 5, doff2016+40);
+    RegisterRun(19669, 1, 5, doff2016+45);
+    RegisterRun(19668, 1, 5, doff2016+50);
+    RegisterRun(19667, 1, 5, doff2016+55);
+    RegisterRun(19666, 1, 5, doff2016+56.8);
 
    //?
     RegisterRun(19816, 0, 5, doff2016+2.5);

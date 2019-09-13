@@ -2,9 +2,9 @@
 #include <iomanip>
 #include "Runinfo.h+"
 
-void Process(Int_t run, Int_t layer, Double_t &x, Double_t &y, Double_t &dx, Double_t &dy, const Char_t *inout);
+void Process(Int_t run, Int_t module, Int_t layer, Double_t &x, Double_t &y, Double_t &dx, Double_t &dy, const Char_t *inout);
 
-void GMResol(Int_t module = 3, Int_t row = 10)
+void GMResol(Int_t module = 3, Int_t row = 16)
 {
 //--Set Style
   // Axis
@@ -21,24 +21,35 @@ void GMResol(Int_t module = 3, Int_t row = 10)
   gStyle->SetTitleFont(22, "Y");
   gStyle->SetTitleFont(22, "");
 
-  const Int_t kNp = 12; //11;
+  const Int_t kNp = 15; //11;
   Double_t xdata[kNp], ydata[kNp], dxdata[kNp], dydata[kNp];
   //    dlen [cm]      5     10     15     20     25     30     35     40     45     50
   //Int_t kRun[] = { 17319, 17367, 17324, 17364, 17327, 17359, 17375, 17356, 17340, 17352}; // B=1T
   //Int_t kRun[] = { 17319, 17367, 17324, 17364, 17327, 17359, 17331, 17356, 17340, 17352}; // B=1T
   //Int_t kRun[] = { 18564, 18563, 18562, 18561, 18552, 18551, 18550, 18549, 18548, 18547}; // B=1T
   //Int_t kRun[] = { 18609, 18606, 18605, 18601, 18600, 18598, 18597, 18595, 18594, 18592, 18591}; // B=1T
- //Int_t kRun[] = { 19985, 19984, 19983, 19982, 19981, 19980, 19979, 19978, 19977, 19976, 19975, 19974, 19973, 19972}; // B=1T
- //Int_t kRun[] = { 20041, 20043, 20044, 20045, 20046, 20047, 20048, 20049, 20050, 20051, 20052, 20053, 20054, 20055}; // B=1T
-  //Int_t kRun[] = { 19868, 19867, 19866, 19865, 19869, 19864, 19870, 19863, 19862, 19861, 19871, 19860, 19872, 19873, 19874}; // B=1T,with gate(not recomend)
-//  Int_t kRun[] = { 19895, 19894, 19893, 19892, 19891, 19890, 19889, 19888, 19887, 19886, 19885, 19884, 19883, 19882, 19881}; // B=1T,with gate(not recomend)
-  Int_t kRun[] = { 19743, 19742, 19741, 19740, 19739, 19738,19737, 19736, 19735, 19734, 19733, 19732}; // B=1T,with gate phi=10
-  //Int_t kRun[] = { 19895, 19894, 19893, 19892, 19891, 19890, 19889, 19888, 19887, 19886, 19885, 19884, 19883, 19882, 19881}; // B=1T,with gate phi=-20
-  //Int_t kRun[] = { 19746, 19747, 19748, 19749, 19750, 19752, 19753, 19754, 19755, 19756, 19757, 19758}; // B=1T,with gate phi=20
+ 
+  //2016
+    //straight 
+    Int_t kRun[] = {19987, 19985, 19984, 19983, 19982, 19981, 19980, 19979, 19978, 19977, 19976, 19975, 19974, 19973, 19972}; // Set1 (http://www-jlc.kek.jp/jlc/ja/elog) kNp =15
+   // Int_t kRun[] = {19868, 19867, 19866, 19865, 19869, 19864, 19870, 19863, 19862, 19861, 19871, 19860, 19872, 19873, 19874}; // set2(not recomend) kNp =15
+   // Int_t kRun[] = {19868, 19867, 19866, 19869, 19870, 19871, 19872, 19873, 19874}; // for calibration kNp =15
+   // Int_t kRun[] = { 19717, 19718, 19719, 19720, 19721, 19722, 19723, 19724, 19725, 19726, 19727, 19728};//Set13 kNp =12 
+   // Int_t kRun[] = { 20041, 20043, 20044, 20045, 20046, 20047, 20048, 20049, 20050, 20051, 20052, 20053, 20054, 20055}; //Set16 FS kNp =14
+    //Int_t kRun[] = { 20074, 20073, 20072, 20071, 20070, 20069, 20068, 20067, 20066, 20065, 20064, 20063, 20062, 20061, 20059, 20058 };//Set17 kNp=16, FS, noemal gain
+   
+ 
+    //angled  
+    //Int_t kRun[] = { 19743, 19742, 19741, 19740, 19739, 19738,19737, 19736, 19735, 19734, 19733, 19732}; // B=1T,with gate phi=10
+    //Int_t kRun[] = { 19895, 19894, 19893, 19892, 19891, 19890, 19889, 19888, 19887, 19886, 19885, 19884, 19883, 19882, 19881}; // B=1T,with gate phi=-20
+    //Int_t kRun[] = { 19746, 19747, 19748, 19749, 19750, 19752, 19753, 19754, 19755, 19756, 19757, 19758}; // B=1T,with gate phi=20
 
+
+//  Int_t kRun[] = { 19895, 19894, 19893, 19892, 19891, 19890, 19889, 19888, 19887, 19886, 19885, 19884, 19883, 19882, 19881}; // B=1T,with gate(not recomend)
 
   Int_t layer = (module < 2 ? 0 : module < 5 ? 28 : 56) + row;
 
+     ofstream outf("result/sigmax_module3_row16_19866.dat");
   // ---------------
   // Loop over runs
   // ---------------
@@ -49,18 +60,17 @@ void GMResol(Int_t module = 3, Int_t row = 10)
     cerr << "********Run=" << run << endl;
 
     Double_t xin, yin, dxin, dyin;
-    Process(run, layer, xin, yin, dxin, dyin, "in");
+    Process(run, module, layer, xin, yin, dxin, dyin, "in");
 
     Double_t xot, yot, dxot, dyot;
-    Process(run, layer, xot, yot, dxot, dyot, "ot");
+    Process(run, module, layer, xot, yot, dxot, dyot, "ot");
 
     Double_t y  = TMath::Sqrt(yin*yot);
     Double_t dy = (dyin+dyot)/2;
 
     xdata[n] = xin; ydata[n] = y; dxdata[n] = dxin; dydata[n] = dy; n++;
     cerr << " sigma = " << y << "+/-" << dy << endl;
-    // ofstream outf("result_module3/sigmax_module3.dat");
-    // outf << y << " " << cd << " " << dcd <<endl;
+     outf << xin << " "<<y  <<endl;
 
     
   }
@@ -74,7 +84,7 @@ void GMResol(Int_t module = 3, Int_t row = 10)
   stringstream titlestr;
   titlestr << "GM Resolutin (Module" << module << " Row" << row << ")" << ends;
   grp->SetTitle(titlestr.str().data());
-  grp->GetHistogram()->GetXaxis()->SetLimits(0.,550.);
+  grp->GetHistogram()->GetXaxis()->SetLimits(0.,600.);
   grp->GetHistogram()->GetXaxis()->SetTitle("Drift Length: z [mm]");
   grp->GetHistogram()->GetYaxis()->SetTitle("#sigma_{x} [mm]");
   grp->Draw("ap");
@@ -127,18 +137,20 @@ void GMResol(Int_t module = 3, Int_t row = 10)
   fitfun->SetTextAlign(12);
   fitfun->DrawLatex(100,4*ymax/5, "#sigma_{x} = #sqrt{#sigma_{0}^{2}+(C_{D}^{2}/N_{eff}) z}");
 
-#if 0
+#if 1
   // save plot as pdf  file
   Runinfo &rinfo = *Runinfo::GetInstancePtr();
   stringstream ofile;
-  ofile << "GMResol_Row" << layer << "_B" << rinfo.GetBfield(run) << "T"
-        << "_P" << rinfo.GetMomentum(run) << "GeV.pdf"<< ends; 
+  ofile << "Result/GMResol_Module" << module << "_Row" << row << "_withgate.pdf"<< ends; 
+  //ofile << "Result/GMResol_Module" << module << "_Row" << row << "_withoutgate.pdf"<< ends; 
   c1->Print(ofile.str().data());
 #endif
 }
 
-void Process(Int_t run, Int_t layer, Double_t &x, Double_t &y, Double_t &dx, Double_t &dy, const Char_t *inout)
+void Process(Int_t run, Int_t module, Int_t layer, Double_t &x, Double_t &y, Double_t &dx, Double_t &dy, const Char_t *inout)
 {
+  int year =2016;
+  cerr<< "year=" << year <<endl;
   // ---------------
   // Reset Run Info.
   // ---------------
@@ -155,10 +167,18 @@ void Process(Int_t run, Int_t layer, Double_t &x, Double_t &y, Double_t &dx, Dou
   // Open input file
   // ---------------
   stringstream finstr;
-  finstr << "../Data_module3/r" << run << ".root" << ends;
-  //finstr << "../Data_2012/r" << run << ".root" << ends;
+  if(year==2016 && module==3){
+    //finstr << "../Data_module3/r" << run << ".root" << ends;
+    finstr << "../Data_new/r" << run << ".root" << ends;
+  }
+  if(year==2012){
+    finstr << "../Data_2012/r" << run << ".root" << ends;
+  }
+  else{finstr << "../Data_tmp/r" << run << ".root" << ends;}
   TFile *hfp = new TFile(finstr.str().data());
 
+  cerr << "Data roaded" <<endl;
+  
   // -----------------
   // Get residual data
   // -----------------
@@ -183,18 +203,68 @@ void Process(Int_t run, Int_t layer, Double_t &x, Double_t &y, Double_t &dx, Dou
 #else
   const Int_t    kNdfCut    = 40;//80
   const Double_t kChi2Cut   = 40000.;
-  const Double_t kCpaMinCut = -8;//-2
-  const Double_t kCpaMaxCut =  2;//4
+  //const Double_t kCpaMinCut = -8;//-2
+  //const Double_t kCpaMaxCut =  2;//4
 #endif
-  const Double_t kPhi0MinCut = 4.37;
-  const Double_t kPhi0MaxCut = 4.44;
+  //const Double_t kPhi0MinCut = 4.37;
+  //const Double_t kPhi0MaxCut = 4.44;
   const Double_t kTanlMinCut = -9999.;
   const Double_t kTanlMaxCut = +9999.;
   const Int_t knTrksCut = 1;
   //const Double_t kfi0locMinCut = -9999;
   //const Double_t kfi0locMaxCut = +9999;
- //const Double_t kfi0locMinCut = 4.64;
-  //const Double_t kfi0locMaxCut = 4.72;
+   
+ /* 
+  Double_t kCpaMinCut = 0;
+  Double_t kCpaMaxCut = 0;
+  Double_t kIncidentphiMinCut =0;
+  Double_t kIncidentphiMaxCut =0;
+ 
+  if( run>=20041 && run<=20055 ){
+   kCpaMinCut = -1.13;
+   kCpaMaxCut =  0.65;
+   kIncidentphiMinCut = -0.026;
+   kIncidentphiMaxCut = 0.018;
+   }
+   else if( run>=19667 && run<=19678 ){
+   kCpaMinCut = -1.28;
+   kCpaMaxCut =  0.80;
+   kIncidentphiMinCut = -0.046;
+   kIncidentphiMaxCut = -0.011;
+   }
+   else if( run>=19972 && run<=19987 ){
+   kCpaMinCut = -1.14;
+   kCpaMaxCut =  0.85;
+   kIncidentphiMinCut = -0.027;
+   kIncidentphiMaxCut = 0.018;
+   }
+   
+   return kCpaMinCut;
+   return kCpaMaxCut;
+   return kIncidentphiMinCut;
+   return kIncidentphiMaxCut;
+
+   cerr << "Cpamin cut="<< kCpaMinCut<<endl;
+   cerr << "Cpamax cut="<< kCpaMinCut<<endl;
+  */
+
+//19985
+ /* 
+  kCpaMinCut = -4;
+   kCpaMaxCut =  5;
+  // kIncidentphiMinCut = -0.0075*3;//3 sigma
+  // kIncidentphiMaxCut = 0.0075*3;
+
+   kIncidentphiMinCut = -0.03;//4 sigma
+   kIncidentphiMaxCut = 0.03;
+  // cerr << "Cpamin cut="<< kCpaMinCut<<endl;
+  // cerr << "Cpamax cut="<< kCpaMinCut<<endl;
+*/
+   Double_t kIncidentphiMinCut = rinfo.GetIncidentphiMinCut(run);
+   Double_t kIncidentphiMaxCut = rinfo.GetIncidentphiMaxCut(run);
+  
+   Double_t kCpaMinCut = rinfo.GetCpaMinCut(run);
+   Double_t kCpaMaxCut = rinfo.GetCpaMaxCut(run);
 
   //const Double_t kfi0locMinCut = 4.69;
   //const Double_t kfi0locMaxCut = 4.76;
@@ -202,8 +272,8 @@ void Process(Int_t run, Int_t layer, Double_t &x, Double_t &y, Double_t &dx, Dou
   //const Double_t kfi0locMinCut = 4.36;//for 19895
   //const Double_t kfi0locMaxCut = 4.43;
 
-  const Double_t kfi0locMinCut = 4.8;//for 19743
-  const Double_t kfi0locMaxCut = 5.1;
+  //const Double_t kfi0locMinCut = 4.8;//for 19743
+  //const Double_t kfi0locMaxCut = 5.1;
   
  // const Double_t kfi0locMinCut = 4.36;//for 19895
  // const Double_t kfi0locMaxCut = 4.40;
@@ -220,8 +290,8 @@ void Process(Int_t run, Int_t layer, Double_t &x, Double_t &y, Double_t &dx, Dou
   //const Double_t kCpaMaxCut =  0.8;
   //const Double_t kCpaMinCut = -4.0;
   //const Double_t kCpaMaxCut =  4.0;
-  const Double_t kCpaMinCut = -8; //-0.6
-  const Double_t kCpaMaxCut =  2;//1.0
+  //const Double_t kCpaMinCut = -8; //-0.6
+  //const Double_t kCpaMaxCut =  2;//1.0
   //const Double_t kPhi0MinCut = 4.64;
   //const Double_t kPhi0MaxCut = 4.70;
   const Double_t kPhi0MinCut = -99999; //4.66
@@ -236,41 +306,54 @@ void Process(Int_t run, Int_t layer, Double_t &x, Double_t &y, Double_t &dx, Dou
   ///////////////////////////////////
   cut << "serialrow==" << layer << "&&"
       << "nhits==1" << "&&"
+      << "nTrks<=" << knTrksCut << "&&"
       << item.str().data() << ">" << kResXmin << "&&"
       << item.str().data() << "<" << kResXmax << "&&"
     //  << "ndf>"  << kNdfCut    << "&&"
       << "chi2<" << kChi2Cut   << "&&"
     //  << "fi0>"  << kPhi0MinCut << "&&"
     //  << "fi0<"  << kPhi0MaxCut << "&&"
-      << "fi0loc>"  << kfi0locMinCut << "&&"
-      << "fi0loc<"  << kfi0locMaxCut << "&&"
+   //   << "fi0loc>"  << kfi0locMinCut << "&&"
+   //   << "fi0loc<"  << kfi0locMaxCut << "&&"
       << "tnl>"  << kTanlMinCut << "&&"
       << "tnl<"  << kTanlMaxCut << "&&"
-     << "nTrks<=" << knTrksCut;
+        << "cpa>"  << kCpaMinCut << "&&"
+        << "cpa<"  << kCpaMaxCut << "&&"
+      << "incidentphi>"  << kIncidentphiMinCut  << "&&"
+      << "incidentphi<"  << kIncidentphiMaxCut;
+ /*
   if (rinfo.GetBfield(run)) {
     cut << "&&"
         << "cpa>"  << kCpaMinCut << "&&"
         << "cpa<"  << kCpaMaxCut;
   }
+  */
   cut << ends;
   stringstream target;
   //target << item.str().data() << ">>htemp(100," << kResXmin << ", " << kResXmax << ")" << ends;
   target << item.str().data() << ">>htemp(50," << kResXmin << ", " << kResXmax << ")" << ends;
+  cerr <<  "target" << target.str() << endl;
   hResXin->Draw(target.str().data(), cut.str().data());
+  cerr << cut.str() << endl;
   //hResXin->Draw(target.str().data());
   
 
   // -----------------
   // Fit residuals
   // -----------------
+  cerr << "start fit" << endl;
   TH1F *htemp = static_cast<TH1F*> (gROOT->FindObject("htemp"));
+  cerr << htemp <<endl;
   htemp->Rebin(1);
- htemp->Fit("gaus","","",-0.3,0.3);
+  cerr << "before fit" <<endl;
+  htemp->Draw();
+#if 1
+  htemp->Fit("gaus","","",-0.3,0.3);
  //htemp->Fit("gaus","RI","",-1.3,1.3);
   Double_t mu  = htemp->GetFunction("gaus")->GetParameter(1);
   Double_t sg  = htemp->GetFunction("gaus")->GetParameter(2);
   htemp->Fit("gaus","RI","",mu-2.5*sg,mu+2.5*sg);
-
+cerr << "finish fit" << endl; 
   x  = rinfo.GetDlength(run) * 10; // [cm] to [mm]
   y  = htemp->GetFunction("gaus")->GetParameter(2); // sigma
   dx = 0;
@@ -283,4 +366,7 @@ void Process(Int_t run, Int_t layer, Double_t &x, Double_t &y, Double_t &dx, Dou
   htemp->SetLineColor(2);
   htemp->Draw("pe");
 #endif
+
+#endif
+  
 }
