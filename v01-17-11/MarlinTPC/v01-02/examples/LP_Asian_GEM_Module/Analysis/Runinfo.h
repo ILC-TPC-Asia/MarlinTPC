@@ -33,11 +33,99 @@ public:
     if (fRunMap.find(run) == fRunMap.end()) return 1.e10;
     else                                    return fRunMap[run].getMomentum();
   }
+  
+  /*inline double GetPhi0locMinCut(int run)
+  { 
+      Double_t fi0locMinCut = 0;
+ 
+    if (run<=19987 && run>=19972) {
+       fi0locMinCut = 4.64;
+    }
+    if(run>=20041) {
+       fi0locMinCut = 4.69;
+    }
+    if(run>=19717 && run <=19728) {
+       fi0locMinCut = 4.70;
+    }
+    if(run>=19666 && run <=19678) {
+       fi0locMinCut = 4.70;
+    }
+    
+    return fi0locMinCut;
+  }
+ 
+  inline double GetPhi0locMaxCut(int run)
+  { 
+      Double_t fi0locMaxCut = 0;//inithialize 
+ 
+    if (run<=19987 && run>=19972) {
+       fi0locMaxCut = 4.72;
+    }
+    if(run>=20041) {
+       fi0locMaxCut = 4.76;//20041
+    }
+    if(run>=19717 && run <=19728) {
+       fi0locMaxCut = 4.76;//20041
+    }
+    if(run>=19666 && run <=19678) {
+       fi0locMaxCut = 4.8;//20041
+    }
+    return fi0locMaxCut;
+  }*/
+
+  inline double GetCpaMinCut(int run)
+  { 
+      Double_t CpaMinCut = 0;//inithialize 
+    if (run<=19987 && run>=19972) {
+  	  CpaMinCut = -4;
+    }
+    if (run>=20041) {
+  	  CpaMinCut = -4;
+    }
+    return CpaMinCut;
+  }
+
+  inline double GetCpaMaxCut(int run)
+  { 
+      Double_t CpaMaxCut = 0;//inithialize 
+    if (run<=19987 && run>=19972) {
+  	  CpaMaxCut = 5;
+    }
+    if (run>=20041) {
+  	  CpaMaxCut = 5;
+    }
+    return CpaMaxCut;
+  }
+
+  inline double GetIncidentphiMinCut(int run)
+  { 
+      Double_t incidentphiMinCut = 0;//inithialize 
+    if (run<=19987 && run>=19972) {
+  	  incidentphiMinCut = -0.03;//1 sigma:0.075 * 4 sigma
+    }
+    if(run>=20041) {
+  	  incidentphiMinCut = -0.03;//1 sigma:0.075 * 4 sigma
+    }
+    return incidentphiMinCut;
+  }
+
+  inline double GetIncidentphiMaxCut(int run)
+  { 
+      Double_t incidentphiMaxCut = 0;//inithialize 
+    if (run<=19987 && run>=19972) {
+  	  incidentphiMaxCut = 0.03;//1 sigma:0.075 * 4 sigma
+    }
+    if (run>=20041) {
+  	  incidentphiMaxCut = 0.03;//1 sigma:0.075 * 4 sigma
+    }
+
+    return incidentphiMaxCut;
+  }
+
 
   // ---------
   // Utility
-  // ---------
-  inline void   RegisterRun(int run, int b, double p, double d)
+
   {
     if (fRunMap.find(run) == fRunMap.end()) {
       fRunMap[run] = RunCond(b,p,d);
@@ -288,7 +376,7 @@ private:
     RegisterRun(18586, 1, 5, 20);
     RegisterRun(18588, 1, 5, 10);
 
-    // Threshold=3 z-scan B=1 shaper=120 HV=330,355 20000event sametarnsfer & indaction gap 18547~18564
+    // Threshold=3 z-scan B=1 shaper=120 HV=330,355 20000event same tarnsfer & induction gap 18547~18564
     RegisterRun(18591, 1, 5, 50);
     RegisterRun(18592, 1, 5, 40);
     RegisterRun(18594, 1, 5, 30);
@@ -311,70 +399,372 @@ private:
     RegisterRun(18744, 1, 5, 50);
 
   //2016
-    RegisterRun(19932, 1, 5, 1.25);
-    RegisterRun(19928, 1, 5, 2.5);
-    RegisterRun(19929, 1, 5, 5);
-    RegisterRun(19931, 1, 5, 7.5);
-    RegisterRun(19930, 1, 5, 10);
-    RegisterRun(19933, 1, 5, 12.5);
-    RegisterRun(19934, 1, 5, 15);
-    RegisterRun(19935, 1, 5, 20);
-    RegisterRun(19936, 1, 5, 25);
-    RegisterRun(19937, 1, 5, 30);
-    RegisterRun(19938, 1, 5, 35);
-    RegisterRun(19939, 1, 5, 40);
-    RegisterRun(19940, 1, 5, 45);
-    RegisterRun(19941, 1, 5, 50);
-    RegisterRun(19942, 1, 5, 55);
+    //double doff2016_1 = 0.69;//(yumia) drift length offset for data 19717 to 19865
+    double doff2016_1 = 0;//(yumia) drift length offset for data 19717 to 19865
+    double doff2016_2 = 0;//(yumia) drift length offset for data 19866 to 19916
+    //double doff2016 = 0.52;//(yumia) drift length offset for data with gate decided using 19985 set(Best data set)
+    double doff2016 = 0;//(yumia) drift length offset for data with gate decided using 19985 set(Best data set)
+    double doff2016wo = 0.61;//(yumia) drift length offset for data without gate decided using set16
+                            // cathode hit 
 
-    RegisterRun(19985, 1, 5, 2.5);
-    RegisterRun(19984, 1, 5, 5);
-    RegisterRun(19983, 1, 5, 7.5);
-    RegisterRun(19982, 1, 5, 10);
-    RegisterRun(19981, 1, 5, 12.5);
-    RegisterRun(19980, 1, 5, 15);
-    RegisterRun(19979, 1, 5, 20);
-    RegisterRun(19978, 1, 5, 25);
-    RegisterRun(19977, 1, 5, 30);
-    RegisterRun(19976, 1, 5, 35);
-    RegisterRun(19975, 1, 5, 40);
-    RegisterRun(19974, 1, 5, 45);
-    RegisterRun(19973, 1, 5, 50);
-    RegisterRun(19972, 1, 5, 55);
+   //Run set 1 (http://www-jlc.kek.jp/jlc/ja/elog)
+    RegisterRun(19987, 1, 5,doff2016+1.25);
+    RegisterRun(19985, 1, 5,doff2016+2.5);
+    RegisterRun(19984, 1, 5,doff2016+5);
+    RegisterRun(19983, 1, 5,doff2016+7.5);
+    RegisterRun(19982, 1, 5,doff2016+10);
+    RegisterRun(19981, 1, 5,doff2016+12.5);
+    RegisterRun(19980, 1, 5,doff2016+15);
+    RegisterRun(19979, 1, 5,doff2016+20);
+    RegisterRun(19978, 1, 5,doff2016+25);
+    RegisterRun(19977, 1, 5,doff2016+30);
+    RegisterRun(19976, 1, 5,doff2016+35);
+    RegisterRun(19975, 1, 5,doff2016+40);
+    RegisterRun(19974, 1, 5,doff2016+45);
+    RegisterRun(19973, 1, 5,doff2016+50);
+    RegisterRun(19972, 1, 5,doff2016+55);
 
-    RegisterRun(20042, 1, 5, 1.25);
-    RegisterRun(20041, 1, 5, 2.5);
-    RegisterRun(20043, 1, 5, 5);
-    RegisterRun(20044, 1, 5, 7.5);
-    RegisterRun(20045, 1, 5, 10);
-    RegisterRun(20046, 1, 5, 12.5);
-    RegisterRun(20047, 1, 5, 15);
-    RegisterRun(20048, 1, 5, 20);
-    RegisterRun(20049, 1, 5, 25);
-    RegisterRun(20050, 1, 5, 30);
-    RegisterRun(20051, 1, 5, 35);
-    RegisterRun(20052, 1, 5, 40);
-    RegisterRun(20053, 1, 5, 45);
-    RegisterRun(20054, 1, 5, 50);
-    RegisterRun(20055, 1, 5, 55);
-    RegisterRun(20056, 1, 5, 55);
-    RegisterRun(20057, 1, 5, 56.8);
+   //Run set 2
+    RegisterRun(19868, 1, 5,doff2016_1+ 0.75);
+    RegisterRun(19867, 1, 5,doff2016_1+ 1.25);
+    RegisterRun(19866, 1, 5,doff2016_1+ 2.5);
+    RegisterRun(19865, 1, 5,doff2016_1+ 5);
+    RegisterRun(19869, 1, 5,doff2016_1+ 7.5);
+    RegisterRun(19864, 1, 5,doff2016_1+ 10);//
+    RegisterRun(19870, 1, 5,doff2016_1+ 12.5);
+    RegisterRun(19863, 1, 5,doff2016_1+ 15);//
+    RegisterRun(19862, 1, 5,doff2016_1+ 20);//
+    RegisterRun(19861, 1, 5,doff2016_1+ 25);//
+    RegisterRun(19871, 1, 5,doff2016_1+ 30);
+    RegisterRun(19860, 1, 5,doff2016_1+ 35);//
+    RegisterRun(19872, 1, 5,doff2016_1+ 40);
+    RegisterRun(19873, 1, 5,doff2016_1+ 50);
+    RegisterRun(19874, 1, 5,doff2016_1+ 55);
 
+   //Run set 3  //calibration has not yet finished
+    RegisterRun(19948, 0, 5, doff2016+1.25);
+    RegisterRun(19946, 0, 5, doff2016+2.5);
+    RegisterRun(19949, 0, 5, doff2016+5.0);
+    RegisterRun(19950, 0, 5, doff2016+7.5);
+    RegisterRun(19951, 0, 5, doff2016+10);
+    RegisterRun(19952, 0, 5, doff2016+12.5);
+    RegisterRun(19953, 0, 5, doff2016+15);
+    RegisterRun(19954, 0, 5, doff2016+20);
+    RegisterRun(19955, 0, 5, doff2016+25);
+    RegisterRun(19956, 0, 5, doff2016+30);
+    RegisterRun(19957, 0, 5, doff2016+35);
+    RegisterRun(19958, 0, 5, doff2016+40);
+    RegisterRun(19959, 0, 5, doff2016+45);
+    RegisterRun(19960, 0, 5, doff2016+50);
+    RegisterRun(19961, 0, 5, doff2016+55);
+   
+   //Run set 4 //cant't calibration - not recommend to use
+    RegisterRun(19932, 0, 5,1.25);
+    RegisterRun(19928, 0, 5,2.5);
+    RegisterRun(19929, 0, 5,5);
+    RegisterRun(19931, 0, 5,7.5);
+    RegisterRun(19930, 0, 5,10);
+    RegisterRun(19933, 0, 5,12.5);
+    RegisterRun(19934, 0, 5,15);
+    RegisterRun(19935, 0, 5,20);
+    RegisterRun(19936, 0, 5,25);
+    RegisterRun(19937, 0, 5,30);
+    RegisterRun(19938, 0, 5,35);
+    RegisterRun(19939, 0, 5,40);
+    RegisterRun(19940, 0, 5,45);
+    RegisterRun(19941, 0, 5,50);
+    RegisterRun(19942, 0, 5,55);
+
+   //Run set 5  //calibration has not yet finished
+    RegisterRun(19902, 1, 5,doff2016+15);
+    RegisterRun(19903, 1, 5,doff2016+15);
+    RegisterRun(19904, 1, 5,doff2016+25);
+    RegisterRun(19905, 1, 5,doff2016+25);
+    RegisterRun(19906, 1, 5,doff2016+35);
+    RegisterRun(19907, 1, 5,doff2016+35);
+
+   //Run set 6  //calibration has not yet finished
+    RegisterRun(19901, 1, 5,1.4+15);
+    RegisterRun(19900, 1, 5,1.4+25);
+
+   //Run set 7
+    RegisterRun(19895, 1, 5, doff2016_1+1.25);
+    RegisterRun(19894, 1, 5, doff2016_1+2.5);
+    RegisterRun(19893, 1, 5, doff2016_1+5);
+    RegisterRun(19892, 1, 5, doff2016_1+7.5);
+    RegisterRun(19891, 1, 5, doff2016_1+10);
+    RegisterRun(19890, 1, 5, doff2016_1+12.5);
+    RegisterRun(19889, 1, 5, doff2016_1+15);
+    RegisterRun(19888, 1, 5, doff2016_1+20);
+    RegisterRun(19887, 1, 5, doff2016_1+25);
+    RegisterRun(19886, 1, 5, doff2016_1+30);
+    RegisterRun(19885, 1, 5, doff2016_1+35);
+    RegisterRun(19884, 1, 5, doff2016_1+40);
+    RegisterRun(19883, 1, 5, doff2016_1+45);
+    RegisterRun(19882, 1, 5, doff2016_1+50);
+    RegisterRun(19881, 1, 5, doff2016_1+55);
+  
+   //Run set 8
+    RegisterRun(19810, 0, 5, doff2016_1+2.5);
+    RegisterRun(19809, 0, 5, doff2016_1+5);
+    RegisterRun(19808, 0, 5, doff2016_1+10);
+    RegisterRun(19807, 0, 5, doff2016_1+15);
+    RegisterRun(19806, 0, 5, doff2016_1+20);
+    RegisterRun(19805, 0, 5, doff2016_1+25);
+    RegisterRun(19804, 0, 5, doff2016_1+30);
+    RegisterRun(19803, 0, 5, doff2016_1+35);
+    RegisterRun(19802, 0, 5, doff2016_1+40);
+    RegisterRun(19801, 0, 5, doff2016_1+45);
+    RegisterRun(19800, 0, 5, doff2016_1+50);
+    RegisterRun(19799, 0, 5, doff2016_1+55);
+
+   //Run set 9
+    RegisterRun(19782, 0, 5, doff2016_1+2.5);
+    RegisterRun(19783, 0, 5, doff2016_1+5);
+    RegisterRun(19784, 0, 5, doff2016_1+10);
+    RegisterRun(19786, 0, 5, doff2016_1+15);
+    RegisterRun(19787, 0, 5, doff2016_1+20);
+    RegisterRun(19788, 0, 5, doff2016_1+25);
+    RegisterRun(19789, 0, 5, doff2016_1+30);
+    RegisterRun(19790, 0, 5, doff2016_1+35);
+    RegisterRun(19791, 0, 5, doff2016_1+40);
+    RegisterRun(19792, 0, 5, doff2016_1+45);
+    RegisterRun(19793, 0, 5, doff2016_1+50);
+    RegisterRun(19794, 0, 5, doff2016_1+55);
+   
+   //Run set 10
+    RegisterRun(19772, 1, 5, doff2016_1+2.5);
+    RegisterRun(19771, 1, 5, doff2016_1+5);
+    RegisterRun(19770, 1, 5, doff2016_1+10);
+    RegisterRun(19769, 1, 5, doff2016_1+15);
+    RegisterRun(19768, 1, 5, doff2016_1+20);
+    RegisterRun(19767, 1, 5, doff2016_1+25);
+    RegisterRun(19766, 1, 5, doff2016_1+30);
+    RegisterRun(19765, 1, 5, doff2016_1+35);
+    RegisterRun(19764, 1, 5, doff2016_1+40);
+    RegisterRun(19763, 1, 5, doff2016_1+45);
+    RegisterRun(19762, 1, 5, doff2016_1+50);
+    RegisterRun(19761, 1, 5, doff2016_1+55);
+
+   //Run set 11 //row16,17,23,24 dead
+    RegisterRun(19746, 1, 5, doff2016_1+2.5);
+    RegisterRun(19747, 1, 5, doff2016_1+5);
+    RegisterRun(19748, 1, 5, doff2016_1+10);
+    RegisterRun(19749, 1, 5, doff2016_1+15);
+    RegisterRun(19750, 1, 5, doff2016_1+20);
+    RegisterRun(19752, 1, 5, doff2016_1+25);
+    RegisterRun(19753, 1, 5, doff2016_1+30);
+    RegisterRun(19754, 1, 5, doff2016_1+35);
+    RegisterRun(19755, 1, 5, doff2016_1+40);
+    RegisterRun(19756, 1, 5, doff2016_1+45);
+    RegisterRun(19757, 1, 5, doff2016_1+50);
+    RegisterRun(19758, 1, 5, doff2016_1+55);
     
+    
+   //Run set 12 //row16~19 dead
+    RegisterRun(19743, 1, 5, doff2016_1+2.5);
+    RegisterRun(19742, 1, 5, doff2016_1+5);
+    RegisterRun(19741, 1, 5, doff2016_1+10);
+    RegisterRun(19740, 1, 5, doff2016_1+15);
+    RegisterRun(19739, 1, 5, doff2016_1+20);
+    RegisterRun(19738, 1, 5, doff2016_1+25);
+    RegisterRun(19737, 1, 5, doff2016_1+30);
+    RegisterRun(19736, 1, 5, doff2016_1+35);
+    RegisterRun(19735, 1, 5, doff2016_1+40);
+    RegisterRun(19734, 1, 5, doff2016_1+45);
+    RegisterRun(19733, 1, 5, doff2016_1+50);
+    RegisterRun(19732, 1, 5, doff2016_1+55);
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+ 
+   //Run set 13
+    RegisterRun(19717, 1, 5, doff2016_1+2.5);
+    RegisterRun(19718, 1, 5, doff2016_1+5);
+    RegisterRun(19719, 1, 5, doff2016_1+10);
+    RegisterRun(19720, 1, 5, doff2016_1+15);
+    RegisterRun(19721, 1, 5, doff2016_1+20);
+    RegisterRun(19722, 1, 5, doff2016_1+25);
+    RegisterRun(19723, 1, 5, doff2016_1+30);
+    RegisterRun(19724, 1, 5, doff2016_1+35);
+    RegisterRun(19725, 1, 5, doff2016_1+40);
+    RegisterRun(19726, 1, 5, doff2016_1+45);
+    RegisterRun(19727, 1, 5, doff2016_1+50);
+    RegisterRun(19728, 1, 5, doff2016_1+55);
+
+ 
+   //Run set 14
+    RegisterRun(19848, 0, 5, doff2016_1+25);
+    RegisterRun(19849, 0, 5, doff2016_1+25);
+    
+   //Run set 15
+    RegisterRun(19852, 0, 5, doff2016_1+15);
+    RegisterRun(19853, 0, 5, doff2016_1+15);
+    RegisterRun(19850, 0, 5, doff2016_1+25);
+    RegisterRun(19851, 0, 5, doff2016_1+25);
+    RegisterRun(19854, 0, 5, doff2016_1+35);
+    RegisterRun(19855, 0, 5, doff2016_1+35);
+    
+   //Run set 16
+    RegisterRun(20042, 1, 5,doff2016wo+1.25);
+    RegisterRun(20041, 1, 5,doff2016wo+2.5);
+    RegisterRun(20043, 1, 5,doff2016wo+5);
+    RegisterRun(20044, 1, 5,doff2016wo+7.5);
+    RegisterRun(20045, 1, 5,doff2016wo+10);
+    RegisterRun(20046, 1, 5,doff2016wo+12.5);
+    RegisterRun(20047, 1, 5,doff2016wo+15);
+    RegisterRun(20048, 1, 5,doff2016wo+20);
+    RegisterRun(20049, 1, 5,doff2016wo+25);
+    RegisterRun(20050, 1, 5,doff2016wo+30);
+    RegisterRun(20051, 1, 5,doff2016wo+35);
+    RegisterRun(20052, 1, 5,doff2016wo+40);
+    RegisterRun(20053, 1, 5,doff2016wo+45);
+    RegisterRun(20054, 1, 5,doff2016wo+50);
+    RegisterRun(20055, 1, 5,doff2016wo+55);
+    RegisterRun(20056, 1, 5,doff2016wo+55);
+    RegisterRun(20057, 1, 5,doff2016wo+56.8);
+
+   
+   //Run set 17
+    RegisterRun(20074, 1, 5, doff2016wo+1.25);
+    RegisterRun(20073, 1, 5, doff2016wo+2.5);
+    RegisterRun(20072, 1, 5, doff2016wo+5);
+    RegisterRun(20071, 1, 5, doff2016wo+7.5);
+    RegisterRun(20070, 1, 5, doff2016wo+10);
+    RegisterRun(20069, 1, 5, doff2016wo+12.5);
+    RegisterRun(20068, 1, 5, doff2016wo+15);
+    RegisterRun(20067, 1, 5, doff2016wo+20);
+    RegisterRun(20066, 1, 5, doff2016wo+25);
+    RegisterRun(20065, 1, 5, doff2016wo+30);
+    RegisterRun(20064, 1, 5, doff2016wo+35);
+    RegisterRun(20063, 1, 5, doff2016wo+40);
+    RegisterRun(20062, 1, 5, doff2016wo+45);
+    RegisterRun(20061, 1, 5, doff2016wo+50);
+    RegisterRun(20059, 1, 5, doff2016wo+55);
+    RegisterRun(20060, 1, 5, doff2016wo+55);
+    RegisterRun(20058, 1, 5, doff2016wo+56.8);
+    
+   //Run set 18
+    RegisterRun(20081, 1, 5, doff2016wo+15);
+    
+   //Run set 19
+    RegisterRun(20011, 1, 5, doff2016wo+15);
+    RegisterRun(20012, 1, 5, doff2016wo+15);
+    RegisterRun(20013, 1, 5, doff2016wo+25);
+    RegisterRun(20014, 1, 5, doff2016wo+25);
+    
+   //Run set 20
+    RegisterRun(20108, 1, 5, doff2016wo+15);
+    RegisterRun(20109, 1, 5, doff2016wo+15);
+    RegisterRun(20105, 1, 5, doff2016wo+25);
+    RegisterRun(20106, 1, 5, doff2016wo+25);
+    RegisterRun(20110, 1, 5, doff2016wo+35);
+    RegisterRun(20111, 1, 5, doff2016wo+35);
+    
+   //Run set 21
+    RegisterRun(20124, 1, 5, doff2016wo+15);
+    RegisterRun(20125, 1, 5, doff2016wo+15);
+    RegisterRun(20122, 1, 5, doff2016wo+25);
+    RegisterRun(20123, 1, 5, doff2016wo+25);
+    RegisterRun(20120, 1, 5, doff2016wo+35);
+    RegisterRun(20121, 1, 5, doff2016wo+35);
+    
+   //Run set 22
+    RegisterRun(20127, 1, 5, doff2016wo+25);
+    
+   //Run set 23
+    RegisterRun(20129, 1, 5, doff2016wo+1.25);
+    RegisterRun(20130, 1, 5, doff2016wo+2.5);
+    RegisterRun(20131, 1, 5, doff2016wo+5);
+    RegisterRun(20132, 1, 5, doff2016wo+7.5);
+    RegisterRun(20133, 1, 5, doff2016wo+10);
+    RegisterRun(20134, 1, 5, doff2016wo+12.5);
+    RegisterRun(20135, 1, 5, doff2016wo+15);
+    RegisterRun(20136, 1, 5, doff2016wo+20);
+    RegisterRun(20137, 1, 5, doff2016wo+25);
+    RegisterRun(20138, 1, 5, doff2016wo+30);
+    RegisterRun(20139, 1, 5, doff2016wo+35);
+    RegisterRun(20140, 1, 5, doff2016wo+40);
+    RegisterRun(20141, 1, 5, doff2016wo+45);
+    RegisterRun(20142, 1, 5, doff2016wo+50);
+    RegisterRun(20143, 1, 5, doff2016wo+55);
+   
+   //Run set 24
+    RegisterRun(20160, 1, 5, doff2016wo+1.25);
+    RegisterRun(20159, 1, 5, doff2016wo+2.5);
+    RegisterRun(20158, 1, 5, doff2016wo+5);
+    RegisterRun(20157, 1, 5, doff2016wo+7.5);
+    RegisterRun(20156, 1, 5, doff2016wo+10);
+    RegisterRun(20155, 1, 5, doff2016wo+12);
+    RegisterRun(20154, 1, 5, doff2016wo+15);
+    RegisterRun(20153, 1, 5, doff2016wo+20);
+    RegisterRun(20152, 1, 5, doff2016wo+25);
+    RegisterRun(20151, 1, 5, doff2016wo+30);
+    RegisterRun(20150, 1, 5, doff2016wo+35);
+    RegisterRun(20149, 1, 5, doff2016wo+40);
+    RegisterRun(20148, 1, 5, doff2016wo+45);
+    RegisterRun(20147, 1, 5, doff2016wo+50);
+    RegisterRun(20146, 1, 5, doff2016wo+55);
+
+   //Run set 25
+    RegisterRun(20162, 1, 5, doff2016wo+1.25);
+    RegisterRun(20163, 1, 5, doff2016wo+2.5);
+    RegisterRun(20164, 1, 5, doff2016wo+5);
+    RegisterRun(20165, 1, 5, doff2016wo+7.5);
+    RegisterRun(20166, 1, 5, doff2016wo+10);
+    RegisterRun(20167, 1, 5, doff2016wo+12);
+    RegisterRun(20168, 1, 5, doff2016wo+15);
+    RegisterRun(20169, 1, 5, doff2016wo+20);
+    RegisterRun(20170, 1, 5, doff2016wo+25);
+    RegisterRun(20171, 1, 5, doff2016wo+30);
+    RegisterRun(20172, 1, 5, doff2016wo+35);
+    RegisterRun(20173, 1, 5, doff2016wo+40);
+    RegisterRun(20174, 1, 5, doff2016wo+45);
+    RegisterRun(20175, 1, 5, doff2016wo+50);
+    RegisterRun(20176, 1, 5, doff2016wo+55);
+
+   //Run set 26
+    RegisterRun(19648, 1, 5, doff2016_1+18.5);
+    RegisterRun(19647, 1, 5, doff2016_1+20.5);
+    RegisterRun(19646, 1, 5, doff2016_1+22.5);
+    RegisterRun(19645, 1, 5, doff2016_1+27.5);
+    RegisterRun(19644, 1, 5, doff2016_1+32.5);
+    RegisterRun(19651, 1, 5, doff2016_1+52.5);
+    RegisterRun(19654, 1, 5, doff2016_1+52.5);
+    RegisterRun(19643, 1, 5, doff2016_1+55);
+    RegisterRun(19652, 1, 5, doff2016_1+57.5);
+   
+   //for calibration
+    RegisterRun(19680, 1, 5, doff2016_1+0);
+    RegisterRun(19678, 1, 5, doff2016_1+2.6);
+    RegisterRun(19677, 1, 5, doff2016_1+4.6);
+    RegisterRun(19676, 1, 5, doff2016_1+9.6);
+    RegisterRun(19675, 1, 5, doff2016_1+14.6);
+    RegisterRun(19674, 1, 5, doff2016_1+19.6);
+    RegisterRun(19673, 1, 5, doff2016_1+25);
+    RegisterRun(19672, 1, 5, doff2016_1+30);
+    RegisterRun(19671, 1, 5, doff2016_1+35);
+    RegisterRun(19670, 1, 5, doff2016_1+40);
+    RegisterRun(19669, 1, 5, doff2016_1+45);
+    RegisterRun(19668, 1, 5, doff2016_1+50);
+    RegisterRun(19667, 1, 5, doff2016_1+55);
+    RegisterRun(19666, 1, 5, doff2016_1+56.8);
+ 
+
+   //?
+    RegisterRun(19816, 0, 5, doff2016_1+2.5);
+    RegisterRun(19817, 0, 5, doff2016_1+5);
+    RegisterRun(19818, 0, 5, doff2016_1+10);
+    RegisterRun(19819, 0, 5, doff2016_1+15);
+    RegisterRun(19820, 0, 5, doff2016_1+20);
+    RegisterRun(19821, 0, 5, doff2016_1+25);
+    RegisterRun(19822, 0, 5, doff2016_1+30);
+    RegisterRun(19824, 0, 5, doff2016_1+35);
+    RegisterRun(19825, 0, 5, doff2016_1+40);
+    RegisterRun(19826, 0, 5, doff2016_1+45);
+    RegisterRun(19827, 0, 5, doff2016_1+50);
+    RegisterRun(19828, 0, 5, doff2016_1+55);
+    
+   
+ 
   }
 
 //private:
