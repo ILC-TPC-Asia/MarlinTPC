@@ -1,0 +1,27 @@
+--- v01-00-01/source/BeamCalReco/src/BeamCalBkgPregen.cpp.orig	2019-12-12 00:18:26.000000000 +0900
++++ v01-00-01/source/BeamCalReco/src/BeamCalBkgPregen.cpp	2020-03-18 20:34:42.000000000 +0900
+@@ -29,6 +29,10 @@
+ #include <map>
+ #include <set>
+ #include <stdexcept>
++#if 0
++#else
++#include <random>
++#endif
+ 
+ using std::vector;
+ using std::string;
+@@ -67,7 +71,13 @@
+   m_backgroundBX = new TChain("bcTree");
+ 
+   //mix up the files, because the random numbers are ordered to avoid repeating
++#if 0
+   std::random_shuffle(bg_files.begin(), bg_files.end());
++#else
++  std::random_device seed_gen;
++  std::mt19937 engine(seed_gen());
++  std::shuffle(bg_files.begin(), bg_files.end(), engine);
++#endif
+ 
+   for (std::vector<std::string>::iterator file = bg_files.begin(); file != bg_files.end(); ++file) {
+     streamlog_out(DEBUG1) << *file << std::endl;

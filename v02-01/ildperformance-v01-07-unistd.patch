@@ -1,0 +1,13 @@
+--- v01-07/dEdX/main/dEdxHistPlotter.cc.orig	2019-12-11 22:39:12.000000000 +0900
++++ v01-07/dEdX/main/dEdxHistPlotter.cc	2020-03-18 20:06:54.000000000 +0900
+@@ -3,6 +3,10 @@
+ #include <string>
+ #include <sys/types.h>
+ #include <sys/stat.h>
++#if 0
++#else
++#include <unistd.h>
++#endif
+ 
+ #include "TFile.h"
+ #include "TDirectory.h"

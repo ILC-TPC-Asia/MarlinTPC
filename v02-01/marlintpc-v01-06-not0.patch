@@ -1,0 +1,12 @@
+--- v01-06/CMakeLists.txt.orig	2020-03-18 16:48:01.000000000 +0900
++++ v01-06/CMakeLists.txt	2020-03-18 23:35:32.000000000 +0900
+@@ -102,6 +102,9 @@
+ IF( KalTest_FOUND AND KalDet_FOUND )
+     MESSAGE ( STATUS "Check for KalTest + KalDet -- works" )
+     ADD_DEFINITIONS( -DUSE_TRACK_FITTER_KALMAN )
++    #---- this set kSdim=5 in KalTest ---
++    # ( should be exported by KalTest really )
++    ADD_DEFINITIONS( -D__NOT0__ )
+ ELSE()
+     MESSAGE( STATUS "KalTest + KalDet not found -- TrackFitterKalman will not be available!" )
+ ENDIF()

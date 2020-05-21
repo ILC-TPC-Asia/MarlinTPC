@@ -1,0 +1,17 @@
+diff -uNr v01-05.ORIG/source/src/ConditionsHandlerBase.cc v01-05/source/src/ConditionsHandlerBase.cc
+--- v01-05.ORIG/source/src/ConditionsHandlerBase.cc	2018-03-28 23:20:13.000000000 +0900
++++ v01-05/source/src/ConditionsHandlerBase.cc	2020-03-18 18:08:05.000000000 +0900
+@@ -56,8 +56,13 @@
+ 
+     std::for_each( _changeListeners.begin() , 
+ 		   _changeListeners.end() , 
++#if 0
+ 		   std::bind2nd( std::mem_fun
+                       ( &IConditionsChangeListener::conditionsChanged  ) , _col ) 
++#else
++		   std::bind( std::mem_fn
++                      ( &IConditionsChangeListener::conditionsChanged  ) , std::placeholders::_1, _col ) 
++#endif
+ 		   ) ;
+ 
+     // or in old fashioned way - simply loop ....      

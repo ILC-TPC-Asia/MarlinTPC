@@ -1,0 +1,16 @@
+diff -uNr v01-11-02.ORIG/cmake/DD4hepBuild.cmake v01-11-02/cmake/DD4hepBuild.cmake
+--- v01-11-02.ORIG/cmake/DD4hepBuild.cmake	2020-03-06 19:45:44.000000000 +0900
++++ v01-11-02/cmake/DD4hepBuild.cmake	2020-03-20 14:39:31.000000000 +0900
+@@ -83,7 +83,11 @@
+   if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
+     SET ( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-undefined,error")
+   elseif ( ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang") OR ( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" ))
+-    SET ( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
++    IF( APPLE )
++       SET ( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-undefined,dynamic_lookup")
++    ELSE()
++       SET ( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
++    ENDIF()
+   else()
+     MESSAGE( WARNING "We do not test with the ${CMAKE_CXX_COMPILER_ID} compiler, use at your own discretion" )
+   endif()

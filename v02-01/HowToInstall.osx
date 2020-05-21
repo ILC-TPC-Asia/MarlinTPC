@@ -1,0 +1,350 @@
+----------------------------------------------------------------------
+2020/03/22 K.Fujii  v02-01
+----------------------------------------------------------------------
+URL: https://github.com/iLCSoft?page=1
+
+1) Install the required packages:
+$ sudo apt-get update
+$ sudo apt-get install yum
+$ sudo yum install mysql-community-devel imake gsl-devel gsl-static clhep geant4 root cernlib xerces-c cmake gcc glibtool m4 autoconf automake poppler-devel libgcrypt-devel libptexenc-devel fastjet fjcontrib ocaml whizard boost-devel lcio sio eigen SIO
+	......
+# After installation, do the following
+$ pushd /opt/g4/10.06/lib
+$ sudo ln -s Geant4-10.6.0 Geant4-10.6
+$ popd
+$ pushd /opt/osxws/lib
+$ sudo ln -s /opt/osxws/etc/alternatives/libstdc++.6.dylib libstdc++.dylib
+--------------------------------------------------------------
+# Note:
+# - The symlink, Geant4-10.6 is necessary to let cmake find Geant4Config.cmake.
+# - This modification should be made to geant4 rpm.
+--------------------------------------------------------------
+
+2) Get the "ilcinstall" and its MacOSX patch
+$ sudo mkdir -p /Users/proj/soft/ilcsoft/src/10.15/v02-01
+$ sudo chown -R <your username> /Users/proj/soft/ilcsoft
+$ cd /Users/proj/soft/ilcsoft/src/10.15/v02-01
+# get the source files from the github above.
+# make them into tarballs for later convenience.
+$ ls 
+CondDBMySQL_ILC-0-9-7.tar.gz
+HowToInstall.osx
+LP_Asian_GEM_Module.tar.gz
+ced-01-09-03.tar.gz
+clupatra-v01-03-c++17.patch
+dd4hep-v01-11-02-macosx10.15.patch
+fcalcluster-v01-00-01-c++17.patch
+forwardtracking-v01-14-notest.patch
+ilcinstall-v02-01-macosx10.15.patch
+ilcinstall.02.01.tar.gz
+ilcutil-v01-06-macosx10.15.patch
+ilcutil-v01-06.tar.gz
+ildperformance-v01-07-unistd.patch
+kaltest-v02-05-c++17.patch
+lccd-v01-06-c++17.patch
+marlintpc-rootfileproc.patch
+marlintpc-v01-06-eigen.patch
+marlintpc-v01-06-not0.patch
+marlinutil-v01-15-01-c++17.patch
+
+
+3) Install dependent libraries
+3-1) ilcutil-v01-06
+$ cd /Users/proj/soft/ilcsoft/src/10.15/v02-01
+$ mkdir -p /Users/proj/soft/ilcsoft/ilcutil
+$ tar -zxvf ilcutil-v01-06.tar.gz -C /Users/proj/soft/ilcsoft/ilcutil
+$ pushd /Users/proj/soft/ilcsoft/ilcutil/v01-06
+$ patch -p1 -s < ../../src/10.15/v02-01/ilcutil-v01-06-macosx10.15.patch
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+$ make install
+$ popd
+
+3-2) ced-v01-09-03
+$ mkdir -p /Users/proj/soft/ilcsoft/CED
+$ tar -zxvf ced-v01-09-03.tar.gz -C /Users/proj/soft/ilcsoft/CED
+$ pushd /Users/proj/soft/ilcsoft/CED/v01-09-03
+$ mkdir build
+$ cd build
+$ cmake -DILCUTIL_DIR=/Users/proj/soft/ilcsoft/ilcutil/v01-06 ..
+$ make
+$ make install
+$ popd
+
+3-3) CondDBMySQL_ILC-0-9-7
+$ mkdir -p /Users/proj/soft/ilcsoft/CondDBMySQL
+$ tar -zxvf CondDBMySQL_ILC-0-9-7.tar.gz -C /Users/proj/soft/ilcsoft/CondDBMySQL
+$ pushd /Users/proj/soft/ilcsoft/CondDBMySQL/CondDBMySQL_ILC-0-9-7
+$ mkdir build
+$ cd build
+$ cmake -DILCUTIL_DIR=/Users/proj/soft/ilcsoft/ilcutil/v01-06 ..
+$ make
+$ make install
+$ popd
+
+4) Build and install the ilcsoft
+$ cd /Users/proj/soft/ilcsoft
+$ tar -zxvf src/10.15/v02-01/ilcinstall.02.01.tar.gz
+$ cd ilcinstall.02.01/
+$ patch -p1 -s -b < ../src/10.15/v02-01/ilcinstall-v02-01-macosx10.15.patch
+$ patch -p1 -s -b < ../src/10.15/v02-01/ilcinstall-v02-01-macosx10.15-dyld.patch
+$ ./ilcsoft-install -i releases/v02-01/release-osx.cfg
+.......
+
+... before compilation starts, apply the following patches in a new window:
+... Open a new terminal and do the following
+
+$ pushd ../v02-01/lccd/v01-05/
+$ patch -p1 -s < ../../../src/10.15/v02-01/lccd-v01-05-c++17.patch
+$ popd
+$ pushd ../v02-01/MarlinUtil/v01-15-01/
+$ patch -p1 -s < ../../../src/10.15/v02-01/marlinutil-v01-15-01-c++17.patch
+$ popd
+$ pushd ../v02-01/ILDPerformance/v01-07/
+$ patch -p1 -s < ../../../src/10.15/v02-01/ildperformance-v01-07-unistd.patch
+$ popd
+$ pushd ../v02-01/ForwardTracking/v01-14/
+$ patch -p1 -s < ../../../src/10.15/v02-01/forwardtracking-v01-14-notest.patch
+$ popd
+$ pushd ../v02-01/MarlinTPC/v01-06/
+$ patch -p1 -s < ../../../src/10.15/v02-01/marlintpc-v01-06-not0.patch
+$ patch -p1 -s < ../../../src/10.15/v02-01/marlintpc-v01-06-eigen.patch
+$ patch -p3 -s < ../../../src/10.15/v02-01/marlintpc-rootfileproc.patch
+$ cd examples tar -zxvf ../../../../src/10.15/v02-01/LP_Asian_GEM_Module.tar.gz
+$ popd
+$ pushd ../v02-01/Clupatra/v01-03/
+$ patch -p1 -s < ../../../src/10.15/v02-01/clupatra-v01-03-c++17.patch
+$ popd
+$ pushd ../v02-01/FCalCluster/v01-00-01/
+$ patch -p1 -s < ../../../src/10.15/v02-01/fcalcluster-v01-00-01-c++17.patch
+$ popd
+$ pushd ../v02-01/KalTest/v02-05/
+$ patch -p1 -s < ../../../src/10.15/v02-01/kaltest-v02-05-c++17.patch
+$ popd
+$ pushd ../v02-01/DD4hep/v01-11-02/
+$ patch -p1 -s < ../../../src/10.15/v02-01/dd4hep-v01-11-02-macosx10.15.patch
+$ popd
+
+--------------------------------------------------------------
+# Note:
+# c++17 dropped mem_fun, bind2nd, register, random_shuffle supports.
+#       forbids 'address of' operation on a reference to nullptr.
+# - mem_fun -> mem_fn						: clupatra/lccd
+# - bind2nd -> bind						: lccd
+# - random_shuffle -> shuffle (with random_device + mt19937) 	: fcalcluster
+# - register -> '' 						: marlinutil 
+# - nullptr dereference forbidden				: kaltest
+#     KalTest: smoothing, inverse filter stopped working.
+--------------------------------------------------------------
+# C++ Note:
+# (a) bind2nd/mem_funn:
+
++#if 0
+     std::bind2nd( std::mem_fun
+      (&IConditionsChangeListener::conditionsChanged), _col) 
++#else
++   std::bind( std::mem_fn
++     (&IConditionsChangeListener::conditionsChanged), std::placeholders::_1, _col) 
++#endif
+
+#
+# (b) register:
+#     Just delete the keyword.
+#
+# (c) random_shuffle:
+
++#if 0
++#else
++#include <random>
++#endif
+	....
++#if 0
+   std::random_shuffle(bg_files.begin(), bg_files.end());
++#else
++  std::random_device seed_gen;
++  std::mt19937 engine(seed_gen());
++  std::shuffle(bg_files.begin(), bg_files.end(), engine);
++#endif
+--------------------------------------------------------------
+# Note 2:
+# DD4hep:
+# - listcomponents compliled with g++ won't work for libDDEvePlugins
+#   and all of libDDG4** if DYLD_LIBRARY_PATH contains /usr/lib before
+#   /opt/osxws/lib so as not to link /usr/lib/libstdc++.dylib instead of
+#   /opt/osxws/lib/libstdc++.dylib..
+#   For this, I had to patch ilcinstall.02.01/ilcsoft/baseilc.py 
+#   to eliminate /usr/lib from DYLD_LIBRARY_PATH:
+#   (see ilcinstall-v02-01-macosx10.15-dyld.patch).
+--------------------------------------------------------------
+
+--------------------------------------------------------------
+To rebuid a package after modifiying the source code:
+$ cd <package dir>
+$ touch .install_failed.tmp
+--------------------------------------------------------------
+
+
+5) Test run
+# I had to add all the relevant lib directories to DYLD_LIBRARY_PATH
+# in init_ilcsoft.sh, which is available in LP_Asian_GEM_Module directory
+# in the MarlinTPC's exapmles directory.
+# I also had to reboot the system with Cmd+R (or Opt+Cmd+R) and do
+# the following to allow DYLD_LIBRARY_PATH
+# csrutil disable
+$ cd /Users/proj/soft/ilcsoft/v02-01/MarlinTPC/v01-06/examples/LP_Asian_GEM_Module/
+$ bash
+$ source init_ilcsoft.sh
+$ sh manyrun.sh 2000
+   .......
+   ... wait until all the runs finish.
+   .......
+$ mv r199* Data/
+$ mav r200* Data/
+$ cd Analysis/
+$ root -l GMResol.C
+   .......
+
+
+6) KalTest in Xcode
+# Do everything below in a new clean window.
+
+6-1) Build root with clang++
+$ sudo alternatives --config gcc
+  .. to select clang
+$ cd <KalTest test directory>
+$ mkdir root
+$ cd root
+$ tar -zxvf <source file directory>/root_v6.20.00.source.tar.gz
+$ cd mv root-6.20.00 6.20.00
+$ cd 6.20.00
+$ mkdir build_root
+$ cd build_root
+$ cmake -DCMAKE_INSTALL_PREFIX=`pwd`/.. ..
+$ make -j8
+$ make install
+
+6-2) Then build ilcutil with that root
+$ cd <KalTest test directory>
+$ mkdir ilcutil
+$ cd ilcutil
+$ tar -zxvf <source file directory>/ilcutil-v01-06.tar.gz
+$ cd v01-06
+$ mkdir build
+$ cd build
+$ source ../../../root/6.20.00/bin/thisroot.sh
+$ cmake ..
+$ make
+$ make install
+
+6-3) Prepare Xcode project for KalTest
+$ cd <KalTest test directory>
+$ mkdir kaltest
+$ tar -zxvf <source file directory>/kaltest-v02-03.tar.gz
+$ cd v02-03
+$ mkdir build
+$ source ../../root/6.20.00/bin/thisroot.sh
+$ cmake -G Xcode -DILCUTIL_DIR=<ilcutil source directory> ..
+
+6-4) Build and run KalTest with Xcode
+# v02-04 does not work (no display)
+# reverted to v02-03
+
+
+7) Try also yoka
+# Do everything below in a new clean window.
+
+7-0) Expand source code
+$ mkdir -p /Users/proj/cdc/soft
+$ cd /Users/proj/cdc/soft/
+$ tar -zxvf <yoka_source_dir>/yoka-cmake.tar.gz 
+
+7-1) Build KalTest
+$ cd yoka/KalTest/v02-03/
+$ source /opt/root/6.20.00/bin/thisroot.sh
+$ export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/opt/osxws/lib
+$ source ./setup
+$ mkdir build
+$ cd build
+$ cmake -DILCUTIL_DIR=/Users/proj/soft/ilcsoft/v02-01/ilcutil/v01-06 -DCMAKE_CXX_STANDARD=17 ..
+$ make -j4 install
+
+2) Build Yoka
+$ cd ../../../yokaRawMonNeo/
+$ source setup.sh
+$ mkdir build
+$ cd build/
+$ cmake -DILCUTIL_DIR=/Users/proj/soft/ilcsoft/v02-01/ilcutil/v01-06 -DKalTest_DIR=/Users/proj/cdc/soft/yoka/KalTest/v02-03 -DCMAKE_CXX_STANDARD=17 ..
+$ make -j4 install
+$ cd ..
+
+3) Then run unpacker and tracker
+$ pushd run/unpacker/
+$ sh manyrun.sh
+$ mv u-*.log root/
+$ popd
+$ pushd run/reco
+$ sh manyrun.sh
+$ mv reco-*.log Data
+$ cd Results
+$ root -l GMResol.C
+ ...
+$ popd
+
+4) You can also try event display
+$ pushd run/display
+$ root -l yokaRawMon.C'(19987)'
+
+
+-----------<Obsolete>-----------------------------------------
+To get the head version do the following, instead:
+$ svn co https://svnsrv.desy.de/public/marlintpc/trunk
+
+
+5) Then build and install MarlinTPC
+If you have libjpeg-devel and libtiff-devel installed,
+uninstall them since they conflict with the system 
+provided libraries:
+
+$ rpm -e libjpeg-devel libtiff-devel
+
+Then build MarlinTPC:
+
+$ cd /Users/proj/cdc/soft/MarlinTPC
+$ tar -zxvf src/r3390.tar.gz
+$ cd r3390
+$ tar -zxvf ../src/analysis.tar.gz
+$ mkdir build
+$ cd build
+$ cmake -C ../../../v01-17-04/ILCSoft.cmake ..
+$ make install
+$ cd ..
+$ tar -zxvf ../src/LP_Asian_GEM_Module.tar.gz -C examples
+
+
+7) You can also try CEDViewer
+In order to use CEDViewer, you need to start a CED server, glced, first.
+$ source ../../../v01-17-04/init_ilcsoft.sh
+$ glced -world_size=100.
+
+Then open a new termnal window and type
+$ cd /Users/proj/cdc/soft/MarlinTPC/r3390/examples/LP_Asian_GEM_Module
+$ Marlin reconstructLCTPCRawData.xml
+
+Hit "h" in the viewer window for "help".
+
+
+
+In order to get trunk version of ilcsoft, first get the trunk version
+of ilcinstall by typing
+
+$ svn co https://svnsrv.desy.de/public/ilctools/ilcinstall/trunk
+
+
+
+
+
+
+
+

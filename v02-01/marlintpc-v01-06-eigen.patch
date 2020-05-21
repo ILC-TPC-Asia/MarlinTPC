@@ -1,0 +1,24 @@
+--- v01-06/CMakeLists.txt.eigen	2020-03-18 23:35:32.000000000 +0900
++++ v01-06/CMakeLists.txt	2020-03-19 09:11:47.000000000 +0900
+@@ -119,10 +119,17 @@
+     ADD_DEFINITIONS( "-DUSE_GBL" )
+     #this construct to find the GBL version is neccessary since the GBL cmake package
+     #currently does not export its version number variable correctly
+-    file(GLOB GBLLIBS "${GBL_DIR}/lib/libGBL.so*")
+-    STRING(REGEX REPLACE ".*so[.]([0-9]+).*" "\\1" GBLVERSIONMAJOR "${GBLLIBS}")
+-    STRING(REGEX REPLACE ".*so[.]([0-9]+[.][0-9]+[.][0-9]+)" "\\1" GBLLIBVERSION "${GBLLIBS}")
+-    MESSAGE(STATUS "GBL library version " ${GBLLIBVERSION})
++    if( NOT APPLE )
++       file(GLOB GBLLIBS "${GBL_DIR}/lib/libGBL.so*")
++       STRING(REGEX REPLACE ".*so[.]([0-9]+).*" "\\1" GBLVERSIONMAJOR "${GBLLIBS}")
++       STRING(REGEX REPLACE ".*so[.]([0-9]+[.][0-9]+[.][0-9]+)" "\\1" GBLLIBVERSION "${GBLLIBS}")
++       MESSAGE(STATUS "GBL library version " ${GBLLIBVERSION})
++    ELSE()
++       file(GLOB GBLLIBS "${GBL_DIR}/lib/libGBL.*dylib")
++       STRING(REGEX REPLACE "[^.]*[.]([0-9]+).*" "\\1" GBLVERSIONMAJOR "${GBLLIBS}")
++       STRING(REGEX REPLACE "[^.]*[.]([0-9]+[.][0-9]+[.][0-9]+)[.]dylib" "\\1" GBLLIBVERSION "${GBLLIBS}")
++       MESSAGE(STATUS "GBL library version " ${GBLLIBVERSION})
++    ENDIF()
+     if ( GBLVERSIONMAJOR GREATER "1" )
+         MESSAGE(STATUS "Use FindEigen3.cmake from this GBL_DIR: " ${GBL_DIR}/cmake)
+         LIST( APPEND CMAKE_MODULE_PATH ${GBL_DIR}/cmake )

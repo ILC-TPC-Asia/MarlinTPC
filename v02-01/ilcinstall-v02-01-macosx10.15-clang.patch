@@ -1,0 +1,511 @@
+diff -uNr ilcinstall.02.01.ORIG/ilcsoft/boost.py ilcinstall.02.01/ilcsoft/boost.py
+--- ilcinstall.02.01.ORIG/ilcsoft/boost.py	2020-03-10 09:09:30.000000000 +0900
++++ ilcinstall.02.01/ilcsoft/boost.py	2020-03-18 16:23:47.000000000 +0900
+@@ -27,7 +27,7 @@
+ 
+         self.reqfiles = [
+             ["include/boost/version.hpp", "include/boost/spirit.hpp", "boost/version.hpp", "boost/spirit.hpp"],
+-            ["lib/libboost_system.so", "lib/libboost_filesystem.so", "lib64/libboost_system.so", "lib64/libboost_filesystem.so"]
++            ["lib/libboost_system.so", "lib/libboost_filesystem.so", "lib/libboost_filesystem.dylib", "lib64/libboost_system.so", "lib64/libboost_filesystem.so"]
+         ]
+ 
+         # The boost build options.
+diff -uNr ilcinstall.02.01.ORIG/ilcsoft/geant4.py ilcinstall.02.01/ilcsoft/geant4.py
+--- ilcinstall.02.01.ORIG/ilcsoft/geant4.py	2020-03-10 09:09:30.000000000 +0900
++++ ilcinstall.02.01/ilcsoft/geant4.py	2020-03-18 14:40:29.000000000 +0900
+@@ -89,7 +89,8 @@
+             self.download.url = "http://geant4.cern.ch/support/source/geant4.%s.tar.gz" % self.version
+ 
+         v = Version( self.version )
+-        v = "%s.%s.%s" % ( v[0], v[1], v[2] )
++        #v = "%s.%s.%s" % ( v[0], v[1], v[2] )
++        v = "%s.%s" % ( v[0], v[1] )
+         self.cmakeconfig = self.installPath + "/lib/Geant4-" + v  + ";" + self.installPath + "/lib64/Geant4-" + v
+ 
+     def compile(self):
+@@ -172,7 +173,7 @@
+             if self.envcmake.has_key( "XERCESC_ROOT_DIR" ):
+                 import platform
+                 if platform.architecture()[0] == '64bit':
+-                    self.envpath["LD_LIBRARY_PATH"].append( self.envcmake[ "XERCESC_ROOT_DIR" ] + "/lib64" )
++                    self.envpath["LD_LIBRARY_PATH"].append( self.envcmake[ "XERCESC_ROOT_DIR" ] + "/lib" )
+                 else:
+                     self.envpath["LD_LIBRARY_PATH"].append( self.envcmake[ "XERCESC_ROOT_DIR" ] + "/lib" )
+ 
+diff -uNr ilcinstall.02.01.ORIG/ilcsoft/mysql.py ilcinstall.02.01/ilcsoft/mysql.py
+--- ilcinstall.02.01.ORIG/ilcsoft/mysql.py	2020-03-10 09:09:30.000000000 +0900
++++ ilcinstall.02.01/ilcsoft/mysql.py	2020-03-18 14:13:40.000000000 +0900
+@@ -38,7 +38,7 @@
+         self.env["MYSQL"] = "$MYSQL_HOME"
+         self.env["MYSQL_PATH"] = "$MYSQL_HOME" # needed for mokka
+         if platform.architecture()[0] == '64bit':
+-            self.env["MYSQL_LIBDIR"] = "$MYSQL_HOME/lib64/mysql" # needed for mokka
++            self.env["MYSQL_LIBDIR"] = "$MYSQL_HOME/lib/mysql" # needed for mokka
+ 
+         if self.installPath != "/usr":
+             self.envpath["PATH"].append( "$MYSQL_HOME/bin" )
+diff -uNr ilcinstall.02.01.ORIG/ilcsoft/root.py ilcinstall.02.01/ilcsoft/root.py
+--- ilcinstall.02.01.ORIG/ilcsoft/root.py	2020-03-10 09:09:30.000000000 +0900
++++ ilcinstall.02.01/ilcsoft/root.py	2020-03-18 14:18:23.000000000 +0900
+@@ -105,9 +105,9 @@
+         self.envcmake.setdefault( 'minuit2',        'ON' )
+         self.envcmake.setdefault( 'roofit',         'ON' )
+         self.envcmake.setdefault( 'unuran',         'ON' )
+-        self.envcmake.setdefault( 'xrootd',         'ON' )
++        self.envcmake.setdefault( 'xrootd',         'OFF' )
+         self.envcmake.setdefault( 'mathmore',       'ON' )
+-        self.envcmake.setdefault( 'builtin_xrootd', 'ON' )
++        self.envcmake.setdefault( 'builtin_xrootd', 'OFF' )
+         self.envcmake.setdefault( 'builtin_gsl',    'OFF' ) # we provide GSL, don't recompile it !
+         self.envcmake.setdefault( 'fortran',        'OFF' )
+         self.envcmake.setdefault( 'mysql',          'OFF' )
+diff -uNr ilcinstall.02.01.ORIG/releases/v02-01/release-base.cfg ilcinstall.02.01/releases/v02-01/release-base.cfg
+--- ilcinstall.02.01.ORIG/releases/v02-01/release-base.cfg	2020-03-10 09:09:30.000000000 +0900
++++ ilcinstall.02.01/releases/v02-01/release-base.cfg	2020-03-18 14:26:36.000000000 +0900
+@@ -60,8 +60,8 @@
+    ncores = 4
+ 
+ ilcsoft.env["MAKEOPTS"]="-j" + str(ncores)
+-ilcsoft.env["CXX"]="g++"
+-ilcsoft.env["CC"]="gcc"
++ilcsoft.env["CXX"]="clang++"
++ilcsoft.env["CC"]="clang"
+ 
+ if( ilcsoft.os.isSL(4) ):
+     ilcsoft.env["FC"]="g77"
+@@ -77,6 +77,7 @@
+ 
+ 
+ ilcsoft.envcmake["CMAKE_BUILD_TYPE"]= "RelWithDebInfo"
++ilcsoft.envcmake["CMAKE_VERBOSE_MAKEFILE"]= "ON"
+ ilcsoft.downloadType = "svn"
+ 
+ # additional system pathes for FIND_LIBRARY, FIND_PATH
+@@ -117,7 +118,8 @@
+ geant4.envcmake["GEANT4_USE_SYSTEM_EXPAT"]='OFF' # ignored ??
+ geant4.envcmake["GEANT4_USE_SYSTEM_CLHEP"]='ON'
+ geant4.envcmake["GEANT4_USE_OPENGL_X11"]='ON'
+-geant4.envcmake["GEANT4_USE_QT"]='ON' # requires qt
++#geant4.envcmake["GEANT4_USE_QT"]='ON' # requires qt
++geant4.envcmake["GEANT4_USE_QT"]='OFF' # requires qt
+ geant4.envcmake["GEANT4_BUILD_TLS_MODEL"]= 'global-dynamic'
+ geant4.envcmake["GEANT4_BUILD_CXXSTD"]='c++' + str(cxx_standard)
+ 
+@@ -134,10 +136,11 @@
+ ilcsoft.install( CLHEP( CLHEP_version ))
+ ilcsoft.install( GSL( GSL_version ))
+ ilcsoft.module("GSL").use_c11=True
+-ilcsoft.install( Qt5( Qt5_version ))
++#ilcsoft.install( Qt5( Qt5_version ))
+ 
+ # cmake
+-ilcsoft.install( CMake( CMake_version ))
++#ilcsoft.install( CMake( CMake_version ))
++ilcsoft.use( CMake( "/opt/osxws" ))
+ 
+ # sio package
+ ilcsoft.install( SIO( SIO_version ))
+diff -uNr ilcinstall.02.01.ORIG/releases/v02-01/release-osx.cfg ilcinstall.02.01/releases/v02-01/release-osx.cfg
+--- ilcinstall.02.01.ORIG/releases/v02-01/release-osx.cfg	2020-03-18 16:29:07.000000000 +0900
++++ ilcinstall.02.01/releases/v02-01/release-osx.cfg	2020-03-19 15:45:21.000000000 +0900
+@@ -0,0 +1,344 @@
++##############################################################################
++#
++# Configuration file for installing ILC Software release v01-14
++#
++# This cfg file assumes the base-level tools from release_v01-14-base.cfg
++# are already installed and available in your system (base-level tools are the
++# tools which are set as 'ilcsoft.link' at the end of this file
++#
++# If you do not have this tools available on your system you can install them
++# with the configuration file release_v01-14-base.cfg or alternatively
++# install all software with release_v01-14-scratch.cfg (please check
++# release_v01-14-base.cfg for more details)
++#
++# Please do not forget to modify the directories in this cfg file
++# according to your system !!
++#
++# Author: F. Gaede, J. Engels, DESY
++# Date: Jun 30, 2010
++#
++##############################################################################
++
++import os, sys
++
++# read package versions from external file
++path_where_this_file_lives = os.path.dirname( config_file )
++versions_file = os.path.join( path_where_this_file_lives, "release-versions.py" )
++execfile( versions_file )
++
++print "Do we install nightlies? ", nightlies
++
++# installation directory
++if not 'ilcsoft_install_dir' in dir():
++    if not 'ilcsoft_install_prefix' in dir():
++        # default install prefix
++        ilcsoft_install_prefix = "$HOME/ilcsoft"
++
++ilcsoft_install_dir = os.path.join( ilcsoft_install_prefix, ilcsoft_release )
++ilcsoft = ILCSoft( ilcsoft_install_dir )
++
++# configuration for nightlies
++if (nightlies==True):
++    ilcsoft_install_dir = ilcsoft = ILCSoft("/scratch/nbuilds/"+date_iso8601)
++    ilcsoft.nightlyBuild=True
++    ilcsoft.nightlyTargets=['NightlyStart', 'NightlyConfigure', 'NightlyBuild', 'install', 'NightlyTest', 'NightlySubmit']
++
++
++#print "ilcsoft install dir %s " %ilcsoft_install_dir
++
++# python variable for referring the ILC Home directory
++# used to link or use already installed packages (SL5)
++# --- set in release-versions.py ---
++#ilcPath = "/afs/desy.de/group/it/ilcsoft/"
++#ilcPath = '/afs/desy.de/project/ilcsoft/sw/i386_gcc41_sl5/'
++if not 'ilcPath' in dir():
++    raise "ilcPath not set"
++
++ilcPath = os.path.normpath( ilcPath ) + '/' # make sure there it ends with /
++
++# global options
++if not ncores:
++   ncores = 4
++
++ilcsoft.env["MAKEOPTS"]="-j" + str(ncores)
++ilcsoft.env["CXX"]="clang++"
++ilcsoft.env["CC"]="clang"
++#
++# Set it to false as ilcutil by default set it to ON.
++# In this case USE_CXX11 overrides the CMAKE_CXX_STANDARD
++ilcsoft.envcmake['USE_CXX11']=False
++ilcsoft.envcmake['CMAKE_CXX_STANDARD']=cxx_standard
++ilcsoft.envcmake["Boost_NO_BOOST_CMAKE"] = 'ON'
++#
++
++# ----- build and install documentation -------------
++ilcsoft.envcmake["INSTALL_DOC"]="ON"
++
++
++#ilcsoft.envcmake["CMAKE_BUILD_TYPE"]= "Debug"
++ilcsoft.envcmake["CMAKE_BUILD_TYPE"]= "RelWithDebInfo"
++#ilcsoft.envcmake["CMAKE_BUILD_TYPE"]= "Release"
++#ilcsoft.envcmake["CMAKE_VERBOSE_MAKEFILE"]= "ON"
++
++ilcsoft.downloadType = "GitHub"
++#ilcsoft.downloadType = "svn-desy"
++
++# additional system pathes for FIND_LIBRARY, FIND_PATH
++#-----------------------------------------------
++#ilcsoft.env["CMAKE_LIBRARY_PATH"]="/usr/lib/gcc/i386-redhat-linux/3.4.3:/another/path/lib"
++#ilcsoft.env["CMAKE_INCLUDE_PATH"]="/usr/include/c++/3.4.3:/another/path/include"
++#-----------------------------------------------
++
++
++###########################################################
++
++ilcsoft.install( LCCD( LCCD_version ))
++#ilcsoft.module("LCCD").envcmake["CMAKE_VERBOSE_MAKEFILE"]= "ON"
++
++ilcsoft.install( Marlin( Marlin_version ))
++# Keep it to OFF for now, as the current Marlin version still compiles with Qt4 only !!
++ilcsoft.module("Marlin").envcmake["MARLIN_GUI"]='OFF'
++
++ilcsoft.install( MarlinPKG( "MarlinDD4hep", MarlinDD4hep_version ))
++ilcsoft.module("MarlinDD4hep").addDependency( [ 'Marlin', 'DD4hep', 'Root', 'DDKalTest'] )
++
++ilcsoft.install( MarlinPKG( "DDMarlinPandora", DDMarlinPandora_version ))
++ilcsoft.module("DDMarlinPandora").envcmake["CMAKE_CXX_FLAGS"]='-Wno-error'
++ilcsoft.module("DDMarlinPandora").addDependency( [ 'Marlin', 'MarlinUtil', 'DD4hep', 'ROOT', 'PandoraPFANew', 'MarlinTrk'] )
++ilcsoft.module("DDMarlinPandora").envcmake["CMAKE_CXX_FLAGS"]='-Wno-error'
++
++
++ilcsoft.install( MarlinUtil( MarlinUtil_version ))
++
++
++#----------  standard reco packages
++
++ilcsoft.install( MarlinReco( MarlinReco_version )) 
++ilcsoft.module("MarlinReco").envcmake["MARLINRECO_FORTRAN"]='OFF'  
++
++ilcsoft.install( PandoraAnalysis( PandoraAnalysis_version ))
++
++ilcsoft.install( PandoraPFANew( PandoraPFANew_version ))
++
++ilcsoft.module("PandoraPFANew").envcmake["PANDORA_MONITORING"]='ON'
++ilcsoft.module("PandoraPFANew").envcmake["LC_PANDORA_CONTENT"]='ON'
++ilcsoft.module("PandoraPFANew").envcmake["EXAMPLE_PANDORA_CONTENT"]='ON'
++ilcsoft.module("PandoraPFANew").envcmake["CMAKE_PREFIX_PATH"]='${ROOTSYS}/cmake'
++ilcsoft.module("PandoraPFANew").envcmake["CMAKE_CXX_FLAGS"]='-std=c++%s' % cxx_standard
++ilcsoft.module("PandoraPFANew").envcmake["CMAKE_CXX_FLAGS"]='-Wno-error'
++
++
++ilcsoft.install( LCFIVertex( LCFIVertex_version ))
++ilcsoft.module("LCFIVertex").envcmake["INSTALL_DOC"]="OFF"
++# ilcsoft.module( "LCFIVertex" ).envcmake["BOOST_ROOT"] = Boost_path
++
++ilcsoft.install( CEDViewer( CEDViewer_version )) 
++
++ilcsoft.install( Overlay( Overlay_version ))  
++
++ilcsoft.install( MarlinPKG( "MarlinFastJet", MarlinFastJet_version ))
++ilcsoft.module("MarlinFastJet").addDependency( [ 'LCIO', 'Marlin', 'FastJet'] )
++
++ilcsoft.install( MarlinPKG( "LCTuple", LCTuple_version ))
++ilcsoft.module("LCTuple").addDependency( [ 'LCIO', 'Marlin', 'ROOT'] )
++
++ilcsoft.install( MarlinPKG( "MarlinKinfit", MarlinKinfit_version ))
++ilcsoft.module("MarlinKinfit").hasCMakeFindSupport=True
++ilcsoft.module("MarlinKinfit").addDependency( [ 'LCIO', 'GEAR', 'GSL', 'Marlin'] )
++
++ilcsoft.install( MarlinTrk( MarlinTrk_version ))
++ilcsoft.install( KiTrack( KiTrack_version ))
++ilcsoft.install( KiTrackMarlin( KiTrackMarlin_version ))
++
++ilcsoft.install( MarlinPKG( "MarlinTrkProcessors", MarlinTrkProcessors_version ))
++ilcsoft.module("MarlinTrkProcessors").addDependency( [ 'LCIO', 'ROOT', 'GSL', 'Marlin', 'MarlinUtil', 'KalTest', 'KalDet', 'MarlinTrk', 'KiTrack', 'KiTrackMarlin'] )
++
++ilcsoft.install( MarlinPKG( "MarlinKinfitProcessors", MarlinKinfitProcessors_version ))
++ilcsoft.module("MarlinKinfitProcessors").addDependency( [ 'LCIO', 'GEAR', 'GSL', 'Marlin'] )
++
++ilcsoft.install( MarlinPKG( "ILDPerformance", ILDPerformance_version ))
++ilcsoft.module("ILDPerformance").addDependency( [ 'Marlin', 'MarlinUtil', 'ROOT'] )
++
++#-- for convenience also include the HEAD version of ILDconfig
++#ilcsoft.install( ConfigPKG( "ILDConfig", ILDConfig_version ))
++#ilcsoft.module("ILDConfig").addDependency( [ 'Marlin', 'MarlinUtil', 'ROOT'] )
++
++ilcsoft.install( MarlinPKG( "Clupatra", Clupatra_version ))
++# Clupatra generates a clupatraConfig.cmake file
++ilcsoft.module("Clupatra").hasCMakeFindSupport=True
++ilcsoft.module("Clupatra").addDependency( [ 'LCIO', 'ROOT', 'RAIDA', 'Marlin', 'MarlinUtil', 'KalTest', 'MarlinTrk' ] )
++
++ilcsoft.install( MarlinPKG( "Physsim", Physsim_version ))
++ilcsoft.module("Physsim").addDependency( [ 'LCIO', 'ROOT', 'Marlin' ] )
++
++
++ilcsoft.install( MarlinPKG( "LCFIPlus", LCFIPlus_version ))
++ilcsoft.module("LCFIPlus").download.type="GitHub"
++ilcsoft.module("LCFIPlus").download.gituser="lcfiplus"
++ilcsoft.module("LCFIPlus").download.gitrepo="LCFIPlus"
++ilcsoft.module("LCFIPlus").addDependency( [ 'LCIO', 'GEAR', 'ROOT', 'Marlin', 'MarlinUtil', 'LCFIVertex'] )
++
++
++ilcsoft.install( MarlinPKG( "FCalClusterer", FCalClusterer_version ))
++# Special case: BeamCalRecoConfig.cmake is generated in FCalClusterer
++ilcsoft.module("FCalClusterer").hasCMakeFindSupport=True
++ilcsoft.module("FCalClusterer").download.supportedTypes = [ "GitHub" ]
++ilcsoft.module("FCalClusterer").download.gituser = 'FCALSW'
++ilcsoft.module("FCalClusterer").download.gitrepo = 'FCalClusterer'
++ilcsoft.module("FCalClusterer").addDependency( [ 'DD4hep', 'GSL' ] )
++ilcsoft.module("FCalClusterer").addDependency( [ 'LCIO', 'ROOT', 'Marlin' ] )
++
++
++ilcsoft.install( MarlinPKG( "ForwardTracking", ForwardTracking_version ))
++ilcsoft.module("ForwardTracking").addDependency( [ 'LCIO', 'GEAR', 'ROOT', 'GSL', 'Marlin', 'MarlinUtil', 'MarlinTrk'] )
++ilcsoft.module("ForwardTracking").envcmake["BUILD_TESTING"]="ON"
++
++
++ilcsoft.install( MarlinPKG( "ConformalTracking", ConformalTracking_version ))
++ilcsoft.module("ConformalTracking").addDependency( [ 'LCIO', 'ROOT', 'Marlin', 'MarlinTrk'] )
++
++
++ilcsoft.install( MarlinPKG( "LICH", LICH_version ))
++ilcsoft.module("LICH").download.type="GitHub"
++ilcsoft.module("LICH").download.gituser="danerdaner"
++ilcsoft.module("LICH").download.gitrepo="LICH"
++ilcsoft.module("LICH").addDependency( [ 'LCIO', 'ROOT', 'Marlin', 'MarlinUtil' ] )
++
++
++#---------test beam packages 
++
++#ilcsoft.install( Eutelescope( Eutelescope_version ))
++#ilcsoft.module("Eutelescope").env['EUDAQ_VERSION']='trunk'
++#ilcsoft.module("Eutelescope").env['MILLEPEDEII_VERSION']='trunk'
++
++ilcsoft.install( PathFinder( PathFinder_version ))
++ilcsoft.module("PathFinder").download.type="svn"
++
++ilcsoft.install( MarlinTPC( MarlinTPC_version ))
++ilcsoft.module("MarlinTPC").download.type="svn"
++ilcsoft.module("MarlinTPC").envcmake['INSTALL_DOC']='OFF'
++
++ilcsoft.install( BBQ( BBQ_version ))
++ilcsoft.module("BBQ").download.type="svn"
++
++#fg: needs porting to ROOT6 (dictionary!)
++#ilcsoft.install( Druid( Druid_version ))
++
++ilcsoft.install( Garlic( Garlic_version ))
++
++
++
++ilcsoft.install( RAIDA( RAIDA_version ))
++
++ilcsoft.install( KalTest( KalTest_version ))
++ilcsoft.install( KalDet( KalDet_version ))
++
++ilcsoft.install( GBL ( GBL_version ) )
++
++ilcsoft.link( XercesC( ilcPath + "xercesc/" + XercesC_version ))
++
++
++# DD4hep
++ilcsoft.install( DD4hep( DD4hep_version )) 
++ilcsoft.module("DD4hep").envcmake["DD4HEP_USE_GEANT4"]=1
++ilcsoft.module("DD4hep").envcmake["DD4HEP_USE_LCIO"]=1
++ilcsoft.module("DD4hep").envcmake["DD4HEP_USE_XERCESC"]=0
++ilcsoft.module("DD4hep").envcmake["DD4HEP_USE_PYROOT"]=0
++ilcsoft.module("DD4hep").envcmake["DD4HEP_USE_GEAR"]=1
++# ilcsoft.module("DD4hep").envcmake["BOOST_ROOT"] = Boost_path
++
++
++ilcsoft.install( lcgeo( lcgeo_version )) 
++
++ilcsoft.install( aidaTT( aidaTT_version )) 
++ilcsoft.module("aidaTT").download.type="GitHub"
++ilcsoft.module("aidaTT").download.gituser="AIDASoft"
++ilcsoft.module("aidaTT").download.gitrepo="aidaTT"
++
++ilcsoft.install( DDKalTest( DDKalTest_version ))
++
++ilcsoft.install( DD4hepExamples ( DD4hepExamples_version ))
++
++####################################################################
++#
++# the following tools are installed in afs:
++#
++# - for SL5 (32bit) under:
++#
++#     /afs/desy.de/project/ilcsoft/sw/i386_gcc41_sl5/
++#
++# - for SL5 (64bit) under:
++#
++#     /afs/desy.de/project/ilcsoft/sw/x86_64_gcc41_sl5
++#
++# they can be linked from there or need to be installed on your system
++#
++####################################################################
++
++
++#----- configs ------------------------------------------------------
++#ilcsoft.link( ConfigPKG( "StandardConfig", ilcPath + "StandardConfig/" + StandardConfig_version ) )
++#stdconf = ilcsoft.module( "StandardConfig")
++#stdconf.env["STANDARDCONFIG"]=stdconf.installPath
++#
++#ilcsoft.link( ConfigPKG( "MokkaDBConfig", ilcPath + "MokkaDBConfig/" + MokkaDBConfig_version ) ) 
++#mokkadbconf = ilcsoft.module( "MokkaDBConfig")
++#mokkadbconf.download.root = "ilctools"
++#mokkadbconf.envorder=["MOKKADBCONFIG"]
++#mokkadbconf.env["MOKKADBCONFIG"]=mokkadbconf.installPath
++#mokkadbconf.env["MOKKA_DUMP_FILE"]="$MOKKADBCONFIG/mokka-dbdump.sql.tgz"
++#mokkadbconf.envpath["PATH"].append( "$MOKKADBCONFIG/scripts" )
++#
++#ilcsoft.link( ConfigPKG( "LCFI_MokkaBasedNets", ilcPath + "LCFI_MokkaBasedNets/" + LCFI_MokkaBasedNets_version ) )
++#lcfinets=ilcsoft.module( "LCFI_MokkaBasedNets" )
++#lcfinets.download.root = "tagnet"
++#lcfinets.env["LCFIMOKKABASEDNETS"]=lcfinets.installPath
++#--------------------------------------------------------------------
++
++ilcsoft.link( CED( ilcPath + "CED/" + CED_version ))
++
++#ilcsoft.link( LCIO( ilcPath + "lcio/" + LCIO_version ))
++ilcsoft.install( LCIO( LCIO_version ))
++
++#----- this will build the optional ROOT dictionary for LCIO -----
++#------ set to OFF  if you don't want it
++ilcsoft.module("LCIO").envcmake['BUILD_ROOTDICT']='ON'
++#ilcsoft.module("LCIO").envcmake['INSTALL_DOC']='OFF'
++#ilcsoft.module("LCIO").envcmake['ROOT_HOME']='${ROOTSYS}'
++#ilcsoft.module("LCIO").envcmake["BUILD_WITH_DCAP"]="ON"
++# it is recommended to use the LD_PRELOAD mechanism for opening lcio files in dCache
++#ilcsoft.link( dcap( ilcPath + "dcap/" + dcap_version ))
++
++#ilcsoft.link( GEAR( ilcPath + "gear/" + GEAR_version ))
++ilcsoft.install( GEAR( GEAR_version ))
++ilcsoft.module("GEAR").envcmake['GEAR_TGEO']='ON'
++
++
++ilcsoft.link( SIO( ilcPath + "sio/" + SIO_version ))
++ilcsoft.link( FastJet( ilcPath + "FastJet/" + FastJet_version ))
++
++ilcsoft.link( ROOT( ilcPath + "root/" + ROOT_version ))
++
++ilcsoft.link( CLHEP( ilcPath + "CLHEP/" + CLHEP_version ))
++ilcsoft.link( GSL( ilcPath + "gsl/" + GSL_version ))
++#ilcsoft.link( Qt5( ilcPath + "Qt5/" + Qt5_version ))
++ilcsoft.link( Geant4( ilcPath + "geant4/" + Geant4_version ))
++
++ilcsoft.link( CondDBMySQL( ilcPath + "CondDBMySQL/" + CondDBMySQL_version ))
++
++# mysql
++if 'MySQL_path' in dir():
++    ilcsoft.use( MySQL( MySQL_path ))
++
++# cmake
++#ilcsoft.use( CMake( ilcPath + "CMake/" + CMake_version ))
++ilcsoft.use( CMake( "/opt/osxws" ))
++
++ilcsoft.link( ILCUTIL( ilcPath + "ilcutil/" + ILCUTIL_version ))
++
++ilcsoft.link( Boost( ilcPath + "boost/" + Boost_version ))
++
++ilcsoft.link( Eigen( ilcPath + "eigen/" + Eigen_version ))
++
++# end of configuration file
++
+diff -uNr ilcinstall.02.01.ORIG/releases/v02-01/release-versions.py ilcinstall.02.01/releases/v02-01/release-versions.py
+--- ilcinstall.02.01.ORIG/releases/v02-01/release-versions.py	2020-03-10 09:09:30.000000000 +0900
++++ ilcinstall.02.01/releases/v02-01/release-versions.py	2020-03-18 14:37:12.000000000 +0900
+@@ -54,6 +54,7 @@
+ # Modify this path to where you want to install the software
+ # ===========================================================
+ #
++installPrefix = "/Users/proj/soft/ilcsoft/clang/"
+ if installPrefix is None:
+     ilcsoft_install_prefix = ilcsoft_afs_path[ arch ]
+ else:
+@@ -105,8 +106,10 @@
+    platfDefault = '/usr/local'
+ 
+ # ----- mysql --------------------------------------------------------
+-MySQL_version = "5.0.45"
+-MySQL_path = platfDefault
++#MySQL_version = "5.0.45"
++MySQL_version = "5.7.28"
++#MySQL_path = platfDefault
++MySQL_path = "/opt/osxws"
+ 
+ # overwrite with a patch set in the environment
+ my_mysql_path = os.getenv("MYSQL_DIR", default=None)
+@@ -126,20 +129,25 @@
+ 
+ # ======================= PACKAGE VERSIONS ===================================
+ 
+-Geant4_version =  "10.04.p03"
++#Geant4_version =  "10.04.p03"
++Geant4_version =  "10.06"
+ 
+-CLHEP_version =  "2.3.4.3"
++#CLHEP_version =  "2.3.4.3"
++CLHEP_version =  "2.4.1.3"
+ 
+-ROOT_version = "6.18.04"
++#ROOT_version = "6.18.04"
++ROOT_version = "6.20.00"
+ 
+ GSL_version = "2.6"
+ 
+-Qt5_version = "v5.13.1"
++#Qt5_version = "v5.13.1"
+ 
+ CMake_version = "3.15.5"
+ 
+-FastJet_version = "3.2.1"
+-FastJetcontrib_version = "1.025"
++#FastJet_version = "3.2.1"
++FastJet_version = "3.3.3"
++#FastJetcontrib_version = "1.025"
++FastJetcontrib_version = "1.042"
+ 
+ CED_version = "v01-09-03"
+ 

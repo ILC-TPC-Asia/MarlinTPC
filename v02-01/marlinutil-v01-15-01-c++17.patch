@@ -1,0 +1,163 @@
+Only in v01-15-01: .github
+Only in v01-15-01: .install_failed.tmp
+Only in v01-15-01: .travis-ci.d
+Only in v01-15-01: .travis.yml
+Only in v01-15-01: AUTHORS
+Only in v01-15-01: CMakeLists.txt
+Only in v01-15-01: LICENCE
+Only in v01-15-01: README.md
+Only in v01-15-01: build
+Only in v01-15-01: build_env.sh
+Only in v01-15-01: cmake
+Only in v01-15-01: doc
+diff -ur v01-15-01.orig/source/ann/ANN.cpp v01-15-01/source/ann/ANN.cpp
+--- v01-15-01.orig/source/ann/ANN.cpp	2019-11-12 22:36:13.000000000 +0900
++++ v01-15-01/source/ann/ANN.cpp	2020-03-18 19:26:05.000000000 +0900
+@@ -48,9 +48,9 @@
+ 	ANNpoint			p,
+ 	ANNpoint			q)
+ {
+-	register int d;
+-	register ANNcoord diff;
+-	register ANNcoord dist;
++	int d;
++	ANNcoord diff;
++	ANNcoord dist;
+ 
+ 	dist = 0;
+ 	for (d = 0; d < dim; d++) {
+diff -ur v01-15-01.orig/source/ann/kd_fix_rad_search.cpp v01-15-01/source/ann/kd_fix_rad_search.cpp
+--- v01-15-01.orig/source/ann/kd_fix_rad_search.cpp	2019-11-12 22:36:13.000000000 +0900
++++ v01-15-01/source/ann/kd_fix_rad_search.cpp	2020-03-18 19:26:05.000000000 +0900
+@@ -147,11 +147,11 @@
+ 
+ void ANNkd_leaf::ann_FR_search(ANNdist box_dist)
+ {
+-	register ANNdist dist;				// distance to data point
+-	register ANNcoord* pp;				// data coordinate pointer
+-	register ANNcoord* qq;				// query coordinate pointer
+-	register ANNcoord t;
+-	register int d;
++	ANNdist dist;				// distance to data point
++	ANNcoord* pp;				// data coordinate pointer
++	ANNcoord* qq;				// query coordinate pointer
++	ANNcoord t;
++	int d;
+ 
+ 	for (int i = 0; i < n_pts; i++) {	// check points in bucket
+ 
+diff -ur v01-15-01.orig/source/ann/kd_pr_search.cpp v01-15-01/source/ann/kd_pr_search.cpp
+--- v01-15-01.orig/source/ann/kd_pr_search.cpp	2019-11-12 22:36:13.000000000 +0900
++++ v01-15-01/source/ann/kd_pr_search.cpp	2020-03-18 19:26:05.000000000 +0900
+@@ -180,12 +180,12 @@
+ 
+ void ANNkd_leaf::ann_pri_search(ANNdist box_dist)
+ {
+-	register ANNdist dist;				// distance to data point
+-	register ANNcoord* pp;				// data coordinate pointer
+-	register ANNcoord* qq;				// query coordinate pointer
+-	register ANNdist min_dist;			// distance to k-th closest point
+-	register ANNcoord t;
+-	register int d;
++	ANNdist dist;				// distance to data point
++	ANNcoord* pp;				// data coordinate pointer
++	ANNcoord* qq;				// query coordinate pointer
++	ANNdist min_dist;			// distance to k-th closest point
++	ANNcoord t;
++	int d;
+ 
+ 	min_dist = ANNprPointMK->max_key(); // k-th smallest distance so far
+ 
+diff -ur v01-15-01.orig/source/ann/kd_search.cpp v01-15-01/source/ann/kd_search.cpp
+--- v01-15-01.orig/source/ann/kd_search.cpp	2019-11-12 22:36:13.000000000 +0900
++++ v01-15-01/source/ann/kd_search.cpp	2020-03-18 19:26:05.000000000 +0900
+@@ -171,12 +171,12 @@
+ 
+ void ANNkd_leaf::ann_search(ANNdist box_dist)
+ {
+-	register ANNdist dist;				// distance to data point
+-	register ANNcoord* pp;				// data coordinate pointer
+-	register ANNcoord* qq;				// query coordinate pointer
+-	register ANNdist min_dist;			// distance to k-th closest point
+-	register ANNcoord t;
+-	register int d;
++	ANNdist dist;				// distance to data point
++	ANNcoord* pp;				// data coordinate pointer
++	ANNcoord* qq;				// query coordinate pointer
++	ANNdist min_dist;			// distance to k-th closest point
++	ANNcoord t;
++	int d;
+ 
+ 	min_dist = ANNkdPointMK->max_key(); // k-th smallest distance so far
+ 
+diff -ur v01-15-01.orig/source/ann/kd_util.cpp v01-15-01/source/ann/kd_util.cpp
+--- v01-15-01.orig/source/ann/kd_util.cpp	2019-11-12 22:36:13.000000000 +0900
++++ v01-15-01/source/ann/kd_util.cpp	2020-03-18 19:26:05.000000000 +0900
+@@ -127,10 +127,10 @@
+ 	const ANNpoint		hi,				// high point of box
+ 	int					dim)			// dimension of space
+ {
+-	register ANNdist dist = 0.0;		// sum of squared distances
+-	register ANNdist t;
++	ANNdist dist = 0.0;		// sum of squared distances
++	ANNdist t;
+ 
+-	for (register int d = 0; d < dim; d++) {
++	for (int d = 0; d < dim; d++) {
+ 		if (q[d] < lo[d]) {				// q is left of box
+ 			t = ANNdist(lo[d]) - ANNdist(q[d]);
+ 			dist = ANN_SUM(dist, ANN_POW(t));
+@@ -238,8 +238,8 @@
+ 	int l = 0;							// left end of current subarray
+ 	int r = n-1;						// right end of current subarray
+ 	while (l < r) {
+-		register int i = (r+l)/2;		// select middle as pivot
+-		register int k;
++		int i = (r+l)/2;		// select middle as pivot
++		int k;
+ 
+ 		if (PA(i,d) > PA(r,d))			// make sure last > pivot
+ 			PASWAP(i,r)
+diff -ur v01-15-01.orig/source/ann/pr_queue.h v01-15-01/source/ann/pr_queue.h
+--- v01-15-01.orig/source/ann/pr_queue.h	2019-11-12 22:36:13.000000000 +0900
++++ v01-15-01/source/ann/pr_queue.h	2020-03-18 19:26:05.000000000 +0900
+@@ -86,9 +86,9 @@
+ 		PQinfo inf)						// item info
+ 		{
+ 			if (++n > max_size) annError("Priority queue overflow.", ANNabort);
+-			register int r = n;
++			int r = n;
+ 			while (r > 1) {				// sift up new item
+-				register int p = r/2;
++				int p = r/2;
+ 				ANN_FLOP(1)				// increment floating ops
+ 				if (pq[p].key <= kv)	// in proper order
+ 					break;
+@@ -105,9 +105,9 @@
+ 		{
+ 			kv = pq[1].key;				// key of min item
+ 			inf = pq[1].info;			// information of min item
+-			register PQkey kn = pq[n--].key;// last item in queue
+-			register int p = 1;			// p points to item out of position
+-			register int r = p<<1;		// left child of p
++			PQkey kn = pq[n--].key;// last item in queue
++			int p = 1;			// p points to item out of position
++			int r = p<<1;		// left child of p
+ 			while (r <= n) {			// while r is still within the heap
+ 				ANN_FLOP(2)				// increment floating ops
+ 										// set r to smaller child of p
+diff -ur v01-15-01.orig/source/ann/pr_queue_k.h v01-15-01/source/ann/pr_queue_k.h
+--- v01-15-01.orig/source/ann/pr_queue_k.h	2019-11-12 22:36:13.000000000 +0900
++++ v01-15-01/source/ann/pr_queue_k.h	2020-03-18 19:26:05.000000000 +0900
+@@ -100,7 +100,7 @@
+ 		PQKkey kv,						// key value
+ 		PQKinfo inf)					// item info
+ 		{
+-			register int i;
++			int i;
+ 										// slide larger values up
+ 			for (i = n; i > 0; i--) {
+ 				if (mk[i-1].key > kv)
+Only in v01-15-01/source: include
+Only in v01-15-01/source: src
+Only in v01-15-01/source: tests

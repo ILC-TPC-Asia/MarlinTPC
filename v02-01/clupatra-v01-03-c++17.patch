@@ -1,0 +1,20 @@
+--- v01-03/src/ClupatraProcessor.cc.orig	2018-03-28 23:19:53.000000000 +0900
++++ v01-03/src/ClupatraProcessor.cc	2020-03-18 20:14:27.000000000 +0900
+@@ -699,7 +699,7 @@
+ 	  }
+ 	}
+ 	// free hits from bad clusters 
+-	std::for_each( smallclu.begin(), smallclu.end(), std::mem_fun( &CluTrack::freeElements ) ) ;
++	std::for_each( smallclu.begin(), smallclu.end(), std::mem_fn( &CluTrack::freeElements ) ) ;
+ 	
+ 	HitDistance distLarge( nloop * dcut * _cutIncrease ) ;
+ 
+@@ -719,7 +719,7 @@
+       bclu.setOwner() ;      
+       split_list( sclu, std::back_inserter(bclu),  DuplicatePadRows( maxTPCLayers, _duplicatePadRowFraction  ) ) ;
+       // free hits from bad clusters 
+-      std::for_each( bclu.begin(), bclu.end(), std::mem_fun( &CluTrack::freeElements ) ) ;
++      std::for_each( bclu.begin(), bclu.end(), std::mem_fn( &CluTrack::freeElements ) ) ;
+ 
+      
+       // ---- now we also need to remove the hits from good cluster seeds from the hitsInLayers:

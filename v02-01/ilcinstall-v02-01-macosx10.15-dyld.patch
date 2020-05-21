@@ -1,0 +1,10 @@
+--- ilcinstall.02.01/ilcsoft/baseilc.py.orig	2020-03-10 09:09:30.000000000 +0900
++++ ilcinstall.02.01/ilcsoft/baseilc.py	2020-03-27 18:31:22.000000000 +0900
+@@ -1125,6 +1125,7 @@
+         if self.os_ver.type == "Darwin":
+             f.write( os.linesep + '# --- set DYLD_LIBRARY_PATH to LD_LIBRARY_PATH for MAC compatibility ---' + os.linesep )
+             f.write( 'export DYLD_LIBRARY_PATH=$LD_LIBRARY_PATH:$DYLD_LIBRARY_PATH' + os.linesep + os.linesep )
++            f.write( 'export DYLD_LIBRARY_PATH=`echo $DYLD_LIBRARY_PATH | sed -e \'s;/opt/osxws/lib:;;g\' -e \'s;/opt/osxws/lib64:;;g\' -e \'s;::;:;g\' -e \'s;/usr/lib:;;g\' -e \'s;/usr/lib64:;;g\'`:/opt/osxws/lib' + os.linesep + os.linesep )
+ 
+         # close file
+         f.close()

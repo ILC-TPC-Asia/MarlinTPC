@@ -1,0 +1,43 @@
+diff -uNr v01-14.ORIG/CMakeLists.txt v01-14/CMakeLists.txt
+--- v01-14.ORIG/CMakeLists.txt	2019-12-11 22:52:28.000000000 +0900
++++ v01-14/CMakeLists.txt	2020-03-18 22:39:18.000000000 +0900
+@@ -159,25 +159,25 @@
+ 
+ ### TESTING #################################################################
+ 
+-MACRO( ADD_UNIT_TEST _name )
+-    IF( BUILD_TESTING )
+-        ADD_EXECUTABLE( test_${_name} ${ARGN} )
+-    ELSE()
+-        ADD_EXECUTABLE( test_${_name} EXCLUDE_FROM_ALL ${ARGN} )
+-    ENDIF()        
+-    TARGET_LINK_LIBRARIES( test_${_name} ${PROJECT_NAME} )
+-    GET_TARGET_PROPERTY( _executable test_${_name} LOCATION )
+-    ADD_TEST( t_${_name} ${_executable} )
+-ENDMACRO()
++#MACRO( ADD_UNIT_TEST _name )
++#    IF( BUILD_TESTING )
++#        ADD_EXECUTABLE( test_${_name} ${ARGN} )
++#    ELSE()
++#        ADD_EXECUTABLE( test_${_name} EXCLUDE_FROM_ALL ${ARGN} )
++#    ENDIF()        
++#    TARGET_LINK_LIBRARIES( test_${_name} ${PROJECT_NAME} )
++#    GET_TARGET_PROPERTY( _executable test_${_name} LOCATION )
++#    ADD_TEST( t_${_name} ${_executable} )
++#ENDMACRO()
+ 
+ INCLUDE_DIRECTORIES( SYSTEM ${ILCTEST_INCLUDE_DIRS} )
+ 
+ 
+ 
+-ADD_UNIT_TEST( simple_circle ./src/testing/test_simple_circle.cc )
+-SET_TESTS_PROPERTIES( t_simple_circle PROPERTIES FAIL_REGULAR_EXPRESSION "TEST_FAILED" )
+-SET_TESTS_PROPERTIES( t_simple_circle PROPERTIES PASS_REGULAR_EXPRESSION "TEST_PASSED" )
+-SET_TESTS_PROPERTIES( t_simple_circle PROPERTIES WILL_FAIL TRUE )
++#ADD_UNIT_TEST( simple_circle ./src/testing/test_simple_circle.cc )
++#SET_TESTS_PROPERTIES( t_simple_circle PROPERTIES FAIL_REGULAR_EXPRESSION "TEST_FAILED" )
++#SET_TESTS_PROPERTIES( t_simple_circle PROPERTIES PASS_REGULAR_EXPRESSION "TEST_PASSED" )
++#SET_TESTS_PROPERTIES( t_simple_circle PROPERTIES WILL_FAIL TRUE )
+ 
+ 
+ 

@@ -1,0 +1,16 @@
+diff -uNr v01-06.ORIG/cmakemodules/ilcsoft_default_cxx_flags.cmake v01-06/cmakemodules/ilcsoft_default_cxx_flags.cmake
+--- v01-06.ORIG/cmakemodules/ilcsoft_default_cxx_flags.cmake	2019-12-11 19:25:04.000000000 +0900
++++ v01-06/cmakemodules/ilcsoft_default_cxx_flags.cmake	2020-03-20 14:09:48.000000000 +0900
+@@ -7,7 +7,11 @@
+ SET(COMPILER_FLAGS -Wall -Wextra -Wshadow -Weffc++ -pedantic -Wno-long-long -Wuninitialized )
+ 
+ IF( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" )
+- LIST( APPEND COMPILER_FLAGS -Wl,-no-undefined )
++ IF( APPLE )
++  LIST( APPEND COMPILER_FLAGS -Wl,-undefined,dynamic_lookup )
++ ELSE()
++  LIST( APPEND COMPILER_FLAGS -Wl,-no-undefined )
++ ENDIF()	
+ ENDIF()
+ 
+ 

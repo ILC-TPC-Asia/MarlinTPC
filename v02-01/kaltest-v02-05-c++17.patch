@@ -1,0 +1,154 @@
+diff -uNr v02-05.ORIG/src/kallib/TVKalSite.cxx v02-05/src/kallib/TVKalSite.cxx
+--- v02-05.ORIG/src/kallib/TVKalSite.cxx	2018-08-21 23:57:11.000000000 +0900
++++ v02-05/src/kallib/TVKalSite.cxx	2020-03-19 19:19:08.000000000 +0900
+@@ -110,7 +110,11 @@
+ 
+ void TVKalSite::Smooth(TVKalSite &pre)
+ {
++#if 0
+    if (&GetState(TVKalSite::kSmoothed)) return;
++#else
++   if (GetStatePtr(TVKalSite::kSmoothed)) return;
++#endif
+ 
+    TVKalState &cura  = GetState(TVKalSite::kFiltered);
+    TVKalState &prea  = pre.GetState(TVKalSite::kPredicted);
+@@ -144,7 +148,11 @@
+ 
+ void TVKalSite::InvFilter()
+ {
++#if 0
+    if (&GetState(TVKalSite::kInvFiltered)) return;
++#else
++   if (GetStatePtr(TVKalSite::kInvFiltered)) return;
++#endif
+ 
+    TVKalState &sa = GetState(TVKalSite::kSmoothed);
+    TKalMatrix pull = fResVec;
+@@ -168,6 +176,7 @@
+ TKalMatrix TVKalSite::GetResVec (TVKalSite::EStType t)
+ {
+    using namespace std;
++#if 0
+    TVKalState &a  = GetState(t);
+    TVKalState &sa = (&GetState(TVKalSite::kSmoothed) != 0
+                     ? GetState(TVKalSite::kSmoothed)
+@@ -184,4 +193,22 @@
+    } else {
+       return (fResVec - fH * (a - sa));
+    }
++#else
++   TVKalState *ap  = GetStatePtr(t);
++   TVKalState *sap = (GetStatePtr(TVKalSite::kSmoothed) != 0
++                    ? GetStatePtr(TVKalSite::kSmoothed)
++                    : GetStatePtr(TVKalSite::kFiltered));
++   if (!ap || !sap) {
++     cerr << ":::::: ERROR in TVKalSite::GetResVec(EStType) " << endl
++          << " Invalid states requested"                      << endl
++          << " &a = " << ap << " &sa = " << sap               << endl
++          << " Abort!"                                        << endl;
++     ::abort();
++   }
++   if (ap == sap) {
++      return fResVec;
++   } else {
++      return (fResVec - fH * (*ap - *sap));
++   }
++#endif
+ }
+diff -uNr v02-05.ORIG/src/kallib/TVKalSite.h v02-05/src/kallib/TVKalSite.h
+--- v02-05.ORIG/src/kallib/TVKalSite.h	2018-08-21 23:57:11.000000000 +0900
++++ v02-05/src/kallib/TVKalSite.h	2020-03-19 18:38:24.000000000 +0900
+@@ -72,7 +72,11 @@
+    inline virtual Int_t        GetDimension() const { return fM.GetNrows(); }
+    inline virtual TVKalState & GetCurState ()       { return *fCurStatePtr; }
+    inline virtual TVKalState & GetCurState () const { return *fCurStatePtr; }
+-   inline virtual TVKalState & GetState (EStType t);
++   inline virtual TVKalState & GetState    (EStType t);
++#if 0
++#else
++   inline virtual TVKalState * GetStatePtr (EStType t);
++#endif
+    inline virtual TKalMatrix & GetMeasVec      ()   { return fM;            }
+    inline virtual TKalMatrix & GetMeasNoiseMat ()   { return fV;            }
+    inline virtual TKalMatrix & GetResVec       ()   { return fResVec;       }
+@@ -122,4 +126,16 @@
+    }
+    return *ap;
+ }
++#if 0
++#else
++
++TVKalState * TVKalSite::GetStatePtr(TVKalSite::EStType t)
++{
++   TVKalState *ap = 0;
++   if (t >= 0 && t < GetEntries()) {
++      ap = static_cast<TVKalState *>(UncheckedAt(t));
++   }
++   return ap;
++}
++#endif
+ #endif
+diff -uNr v02-05.ORIG/src/kallib/TVKalSystem.cxx v02-05/src/kallib/TVKalSystem.cxx
+--- v02-05.ORIG/src/kallib/TVKalSystem.cxx	2018-08-21 23:57:11.000000000 +0900
++++ v02-05/src/kallib/TVKalSystem.cxx	2020-03-19 19:26:28.000000000 +0900
+@@ -102,8 +102,13 @@
+    TVKalSite  *prePtr;
+    TVKalSite  *curPtr = static_cast<TVKalSite *>(cur());
+    TVKalState &cura   = curPtr->GetState(TVKalSite::kFiltered);
++#if 0
+    TVKalState &scura  = curPtr->GetState(TVKalSite::kSmoothed); 
+    if (!&scura) {
++#else
++   TVKalState *scurap = curPtr->GetStatePtr(TVKalSite::kSmoothed); 
++   if (!scurap) {
++#endif
+       curPtr->Add(&curPtr->CreateState(cura, cura.GetCovMat(),
+                                        TVKalSite::kSmoothed));
+    }
+@@ -146,7 +151,11 @@
+    //
+    // Check if site k already smoothed
+    //
++#if 0
+    if (!&curPtr->GetState(TVKalSite::kSmoothed)) SmoothBackTo(k);
++#else
++   if (!curPtr->GetStatePtr(TVKalSite::kSmoothed)) SmoothBackTo(k);
++#endif
+    //
+    // Inverse filter site k
+    //
+diff -uNr v02-05.ORIG/src/kallib/TVKalSystem.h v02-05/src/kallib/TVKalSystem.h
+--- v02-05.ORIG/src/kallib/TVKalSystem.h	2018-08-21 23:57:11.000000000 +0900
++++ v02-05/src/kallib/TVKalSystem.h	2020-03-19 18:37:31.000000000 +0900
+@@ -53,6 +53,11 @@
+    inline virtual TVKalSite  & GetCurSite()     { return *fCurSitePtr; }
+    inline virtual TVKalState & GetState(TVKalSite::EStType t) 
+                                    { return fCurSitePtr->GetState(t); }
++#if 0
++#else
++   inline virtual TVKalState * GetStatePtr(TVKalSite::EStType t) 
++                                   { return fCurSitePtr->GetStatePtr(t); }
++#endif
+    inline virtual Double_t     GetChi2() { return fChi2; }
+           virtual Int_t        GetNDF (Bool_t self = kTRUE);
+    
+diff -uNr v02-05.ORIG/src/kaltracklib/TKalTrack.cxx v02-05/src/kaltracklib/TKalTrack.cxx
+--- v02-05.ORIG/src/kaltracklib/TKalTrack.cxx	2018-08-21 23:57:11.000000000 +0900
++++ v02-05/src/kaltracklib/TKalTrack.cxx	2020-03-19 19:01:44.000000000 +0900
+@@ -197,9 +197,15 @@
+     str << "    site at index : " <<  IndexOf(curPtr) << std::endl ;
+     
+     
++#if 0
+     TVKalState *tsP  = &curPtr->GetState(TVKalSite::kPredicted);
+     TVKalState *tsF  = &curPtr->GetState(TVKalSite::kFiltered);
+     TVKalState *tsS  = &curPtr->GetState(TVKalSite::kSmoothed); 
++#else
++    TVKalState *tsP  = curPtr->GetStatePtr(TVKalSite::kPredicted);
++    TVKalState *tsF  = curPtr->GetStatePtr(TVKalSite::kFiltered);
++    TVKalState *tsS  = curPtr->GetStatePtr(TVKalSite::kSmoothed); 
++#endif
+     
+ 
+     if(  tsP ) {

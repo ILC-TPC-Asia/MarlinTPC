@@ -1,0 +1,777 @@
+2020/03/09 on 10.15
+0) Clean up MacOSXWS and HEPonX
+$ cd
+$ rpm -qa > rpm.list.10.14
+$ sudo rpm -e `rpm -qa | sed -e 's;\.fat$;;' | sed -e 's;\.noarch$;;' | sed -e 's;\.i386;;' | sed -e 's;\.x86_64;;'`
+$ sudo rm -rf /opt/osxws/*
+
+One can also try
+$ sudo apt-get remove OSX-base
+
+Remove private symlinks under /, recreate /opt/, and moeve X11 to /opt/
+$ sudo rm -f /opt /cern /proj
+$ sudo mkdir /opt
+$ sudo mv /Users/opt/X11 /opt/
+
+
+Then upgrade to "Catalina".
+Do all the updates.
+
+-> Adobe creative suits, iWeb, jing, etc., stopped working.
+
+1) Install Xcode-11.4 if not yet.
+Even if you have installed it before updating to "Catalina", you need
+to reinstall the command line tools:
+$ xcode-select --install # triggers the installation of command line tools
+
+
+2) Install Xquartz-2.7.11.dmg  if not yet.
+--------------
+XQuartz-2.7.11's libXt.6.dylib is in two-level-namespace,
+which breaks paw++.
+To work around this problem, do the following:
+$ cd /opt/X11/lib
+$ sudo mkdir two_level_namespace
+$ sudo mv libXt.6.dylib two_level_namespace
+$ sudo cp -p flat_namespace/libXt.6.dylib .
+--------------
+
+
+3) Reinstall osxws10.15
+Install MacOSX-WS-10.15.1.dmg
+$ sudo apt-get update
+$ sudo apt-get install OSX-base
+
+
+4) Install yum and use it to install all the other RPM packages
+$ sudo apt-get install yum
+$ sudo vi /opt/osxws/etc/yum.conf
+...
+deltarpm=0
+...
+$ sudo yum install `cat rpm.list.10.14 | sed -e 's;\(.*\)-[0-9]*.*-.*;\1;'`
+
+# If this command fails (times out), retry as many times as needed.
+# Now use TeXShop from the TeXShop web page.
+# if needed, try to "yum reinstall alternatives" and "yum reinstall gcc" to get gcc recognized.
+
+########### CAUTION ############################################
+2020/03/13: situation changed!!!
+With 10.15 and gcc-9, I had to create /opt/osxws/lib/libstdc++.dylib
+otherwise PyROOT won't work.
+################################################################
+
+
+5) Install JDK
+Install	
+	jdk-13.0.1_osx-x64_bin.dmg
+from Oracle site.
+$ cd /Library/Java
+$ sudo ln -s JavaVirtualMachines/jdk-13.0.1.jdk/Contents/Home .
+
+6) lcsoft
+/Users/proj/soft/lcsoft # patched cxxdepends
+                        # to let rootcint to fine system headers.
+                        # Notice that /usr/include is removed on Catalina.
+
+7) yoka
+/Users/proj/cdc/soft/yoka
+# had to patch cxxdepends and makejsf.tmpl
+# works with root6
+# with Catalina and gcc9, all scripts need ACLiC (i.e. with *.C+)
+# had to revert "Runinfo.h+" to "Runinfo.h" in the scriopt for ACLiC.
+
+
+8) ilcsoft
+8-1) Install external libraries
+HepMC3          # to build it, temporarily uninstall python3.
+fastjet-3.2.1
+fjcontrib-1.026
+ocaml-4.06.1
+whizard-2.6.3
+
+
+8-2) Build dependent semi-external libraries
+$ sudo mkdir -p /Users/proj/soft/ilcsoft
+$ sudo chown <username> /Users/proj/soft/ilcsoft
+
+ilcutil-v01-06:
+$ cd /Users/proj/soft/ilcsoft/src/10.15/v02-01
+$ mkdir -p /Users/proj/soft/ilcsoft/ilcutil
+$ tar -zxvf ilcutil-v01-06.tar.gz -C /Users/proj/soft/ilcsoft/ilcutil
+$ pushd /Users/proj/soft/ilcsoft/ilcutil/v01-06
+$ patch -p1 -s < ../../src/10.15/v02-01/ilcutil-v01-06-macosx10.15.patch
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+$ make install
+$ popd
+
+ced-v01-09-03:
+$ mkdir -p /Users/proj/soft/ilcsoft/CED
+$ tar -zxvf ced-v01-09-03.tar.gz -C /Users/proj/soft/ilcsoft/CED
+$ pushd /Users/proj/soft/ilcsoft/CED/v01-09-03
+$ mkdir build
+$ cd build
+$ cmake -DILCUTIL_DIR=/Users/proj/soft/ilcsoft/ilcutil/v01-06 ..
+$ make
+$ make install
+$ popd
+
+CondDBMySQL_ILC-0-9-7:
+$ mkdir -p /Users/proj/soft/ilcsoft/CondDBMySQL
+$ tar -zxvf CondDBMySQL_ILC-0-9-7.tar.gz -C /Users/proj/soft/ilcsoft/CondDBMySQL
+$ pushd /Users/proj/soft/ilcsoft/CondDBMySQL/CondDBMySQL_ILC-0-9-7
+$ mkdir build
+$ cd build
+$ cmake -DILCUTIL_DIR=/Users/proj/soft/ilcsoft/ilcutil/v01-06 ..
+$ make
+$ make install
+$ popd
+
+8-3) ilcsoft-v02-00-01
+$ export PATH=/opt/apache/bin:$PATH # to get svn work!
+$ cd /Users/proj/soft/ilcsoft
+$ tar -zxvf src/10.15/v02-01/ilcinstall.02.01.tar.gz
+$ cd ilcinstall
+$ patch -p1 -s -b < ../src/10.15/v02-01/ilcinstall-v02-01-macosx10.15.patch
+$ patch -p1 -s -b < ../src/10.15/v02-01/ilcinstall-v02-01-dyld-macosx10.15.patch
+$ ./ilcsoft-install -i releases/v02-00/release-osx.cfg
+.......
+
+... before compilation starts, apply the following patches in a new window:
+... Open a new terminal and do the following
+
+$ pushd ../v02-01/lccd/v01-05/
+$ patch -p1 -s < ../../../src/10.15/v02-01/lccd-v01-05-c++17.patch
+$ popd
+$ pushd ../v02-01/MarlinUtil/v01-15-01/
+$ patch -p1 -s < ../../../src/10.15/v02-01/marlinutil-v01-15-01-c++17.patch
+$ popd
+$ pushd ../v02-01/ILDPerformance/v01-07/
+$ patch -p1 -s < ../../../src/10.15/v02-01/ildperformance-v01-07-unistd.patch
+$ popd
+$ pushd ../v02-01/ForwardTracking/v01-14/
+$ patch -p1 -s < ../../../src/10.15/v02-01/forwardtracking-v01-14-notest.patch
+$ popd
+$ pushd ../v02-01/MarlinTPC/v01-06/
+$ patch -p1 -s < ../../../src/10.15/v02-01/marlintpc-v01-06-not0.patch
+$ patch -p1 -s < ../../../src/10.15/v02-01/marlintpc-v01-06-eigen.patch
+$ patch -p3 -s < ../../../src/10.15/v02-01/marlintpc-rootfileproc.patch
+$ cd examples tar -zxvf ../../../../src/10.15/v02-01/LP_Asian_GEM_Module.tar.gz
+$ popd
+$ pushd ../v02-01/Clupatra/v01-03/
+$ patch -p1 -s < ../../../src/10.15/v02-01/clupatra-v01-03-c++17.patch
+$ popd
+$ pushd ../v02-01/FCalCluster/v01-00-01/
+$ patch -p1 -s < ../../../src/10.15/v02-01/fcalcluster-v01-00-01-c++17.patch
+$ popd
+$ pushd ../v02-01/KalTest/v02-05/
+$ patch -p1 -s < ../../../src/10.15/v02-01/kaltest-v02-05-c++17.patch
+$ popd
+$ pushd ../v02-01/DD4hep/v01-11-02/
+$ patch -p1 -s < ../../../src/10.15/v02-01/dd4hep-v01-11-02-macosx10.15.patch
+$ popd
+
+--------------------------------------------------------------
+# Note: for v02-00-01
+# DD4hep: DDCore/src/NamedObject.cpp # commented out instantiation of dd4hep::Handle<NamedObject>
+#       : DDCore/src/plugins/LCDDConverter.cpp # const TGeoMatrix &linv, etc.
+#       : cmake/DD4hepBuild.cmake    # replace -no-undefined by undefined,error
+# PandrawPFANew: PandoraSDK-v03-02-01/src/Xml/tinyxmlparser.cc # [[fallthrough]];
+# bbq: v00-01-03/src/TBBQManager.cxx # avoid comparison of pointer with logical
+#
+# To run Marlin, I had to swich off the system integration util:
+# Reboot the system with Cmd+R (or if it does not work, Opt+Cmd+R) and type in
+# csrutil disable
+--------------------------------------------------------------
+# Note 2: geant4.10.06 issue
+#   ilcsoft-v02-00-01/DD4hep does not compile with this version, claiming 
+#   that it cannot find a proper verson of xerces-c even though it's there.
+#   This probelm persists even if xerces-c support is switched off.
+#   --> geant4-10.04.p01 does not have this problem, though it is simply 
+#       because xerces-c is not linked in this version.
+#   --> The problem is caused by 
+#            /opt/g4/10.06.01/lib/Geant4-10.6.0/Geant4LibraryDepends.cmake
+#       which includes XercesC::XercesC in INTERFACE_LINK_LIBRARIES though
+#       there is no dictionary provided to translate XercesC::XercesC to
+#       a real path to libxerces-c.dylib. 
+#       ##### Temporary Dirty Hack ####
+#       Removed XercesC::XercesC from INTERFACE_LINK_LIBRARIES.
+#       Be sure to fix this when geant4 is rebuilt.
+#       The xerces-c version check failure in DD4hep's FindXercesC.cmake
+#       is fixed by setting VERSION_VAR from "XercesVersion.hpp".
+#   --> Found FindXercesC.cmake officially provided by cmake 3.15.5.
+#       Just removing DD4hep's FindXercesC.cmake fixed the problem.
+#       For lcgeo, dd4hepexamples, add xercesc to include dirs.
+#   --> Some tex package missing -> listfititems.sty?
+#   --> Switch off doc generation temporarily. 
+--------------------------------------------------------------
+# Note 3: listcomponents -o libDDG4Python.components libDDG4Python.1.7.dylib
+#       segfaults and could not make list file.
+#       --> copied libDDG4Python.components from 10.14.
+#       Found this was caused by a bad libPyROOT.dylib
+# Note 4: 2020/03/13: situation changed
+#       PyROOT was not been working with /opt/osxws/lib/libstdc++.a
+#       --> Creating /opt/osxws/lib/libstdc++.dylib
+#           solved all the problems with PyROOT and also cling
+#           which was not working in interpreter modes for most TPC scripts.
+--------------------------------------------------------------
+--------------------------------------------------------------
+# Note 5: for v02-01
+# c++17 dropped mem_fun, bind2nd, register, random_shuffle supports.
+#       forbids 'address of' operation on a reference to nullptr.
+# - mem_fun -> mem_fn						: clupatra/lccd
+# - bind2nd -> bind						: lccd
+# - random_shuffle -> shuffle (with random_device + mt19937) 	: fcalcluster
+# - register -> '' 						: marlinutil 
+# - nullptr dereference forbidden				: kaltest
+#     KalTest: smoothing, inverse filter stopped working.
+--------------------------------------------------------------
+# C++ Note:
+# (a) bind2nd/mem_funn:
+
++#if 0
+     std::bind2nd( std::mem_fun
+      (&IConditionsChangeListener::conditionsChanged), _col) 
++#else
++   std::bind( std::mem_fn
++     (&IConditionsChangeListener::conditionsChanged), std::placeholders::_1, _col) 
++#endif
+
+#
+# (b) register:
+#     Just delete the keyword.
+#
+# (c) random_shuffle:
+
++#if 0
++#else
++#include <random>
++#endif
+	....
++#if 0
+   std::random_shuffle(bg_files.begin(), bg_files.end());
++#else
++  std::random_device seed_gen;
++  std::mt19937 engine(seed_gen());
++  std::shuffle(bg_files.begin(), bg_files.end(), engine);
++#endif
+--------------------------------------------------------------
+# Note 2:
+# DD4hep:
+# - listcomponents compliled with g++ won't work for libDDEvePlugins
+#   and all of libDDG4** if DYLD_LIBRARY_PATH contains /usr/lib before
+#   /opt/osxws/lib so as not to link /usr/lib/libstdc++.dylib instead of
+#   /opt/osxws/lib/libstdc++.dylib..
+#   For this, I had to patch ilcinstall.02.01/ilcsoft/baseilc.py 
+#   to eliminate /usr/lib from DYLD_LIBRARY_PATH:
+#   (see ilcinstall-v02-01-macosx10.15-dyld.patch).
+--------------------------------------------------------------
+To rebuid a package 
+$ cd <package dir>
+$ touch .install_failed.tmp
+
+
+-------------------------------------------------------------
+To be moved to OSXWS
+-------------------------------------------------------------
+To be moved:
+ gcc  -> done
+
+To be possibly moved:
+ eigen
+ gsl
+ libpgp-error
+ libgcrypt
+
+Note added on 2020/03/16
+To downgrade a package:
+$ sudo yum downgrade gcc-9.2.0-2osx10.15
+To reinstall a package:
+$ sudo yum reinstall root
+
+---------------<Obsolete as of 2020/03/04>----------------------------
+
+6) Install gcc
+6-1) Preparation
+*) install lzip-1.21
+*) install gmp-devel-6.1.2
+*) install mpfr-devel-4.0.2
+*) install libmpc-devel-1.1.0
+*) install isl-devel-0.22
+gcc-9.2.0
+$ sudo alternatives --config gcc
+  --> select clang (2)
+	
+
+7) Update base libraries
+Prepare dependent HEPonX RPMs for 10.14 using Apple's gcc:
+- HEPSystem
+- Libcompat # had to explicitly specify MAKEFILEPATH now on 10.14
+ 	    # MAKEFILE=/Applications/Xcode.app/Contents/Developer/Makefiles	
+- libgpg-error-1.36
+  had to use gawk with --traditional in %build stage.
+- libgcrypt-1.8.2
+- mysql-community-5.7.22
+# mysql has to be built before installing a recent version of "Boost".
+# first reset root password
+$ sudo mysqld_safe --skip-grant-tables & # to start mysqld without passowrd authentication
+$ mysql -u root
+mysql> use mysql
+mysql> set password for root@localhost=password('[root_password]');
+mysql> exit
+$ mysql -u root -p
+mysql> use mysql
+mysql> create user 'mysql'@'localhost' identified by '[mysql_password]';
+mysql> grant all privileges on *.* to 'mysql'@'localhost' with grant option;
+mysql> flush privileges;
+mysql> exit
+$ mysql -u mysql -p
+mysql> create database DRUPAL8DB;
+mysql> show databases;
+mysql> select host, user from mysql.user;
+mysql> exit
+
+$ sudo alternatives --config gcc
+  --> select gcc (1)
+- imake-1.0.7    # imake should be compiled with gcc not with clang!
+                 # otherwise tabs are replaced by blanks and screw up
+                 # resultant makefiles.
+                 # adjusted default system include dir since now /usr/include has been eliminated.
+
+
+8) CERNLIB build: now automatic build by rpm
+First build cernlib without nypatchy, then build patchy, and then
+build cernlib with nypatchy.
+Now installed in /opt/cern
+
+Then prepare RPMs for Dis45, Topdraw, and TDR.
+--------------
+XQuartz-2.7.11's libXt.6.dylib is in two-level-namespace,
+which breaks paw++.
+To work around this problem, do the following:
+$ cd /opt/X11/lib
+$ sudo mkdir two_level_namespace
+$ sudo mv libXt.6.dylib two_level_namespace
+$ sudo cp -p flat_namespace/libXt.6.dylib .
+--------------
+* chown cannot change some files with extra attributes.
+	Use GUI (Infomation) to modify the owner and permissions.
+
+
+9) CLHEP, GSL, Xerces-c
+Prepare and install RPMs for CLHEP, GSL, and Xerces-c.
+clhep22-2.2.0.1
+gsl1-1.16
+clhep-2.4.1.3
+gsl-2.6
+xerces-c31-3.1.4 # for geant49
+xerces-c-3.2.2   # patched to fix duplicate symbol problems.
+                 # xerces-c now installed under /opt/xercesc/%{version}
+
+10) geant4: now automatic build by rpm
+geant49-9.6.p02  # depends on xerces-c
+david-1_36a	 # added -Wno-write-strings -fpermissive
+dawn-3_88a	 # added -Wno-write-strings -fpermissive
+dawncut-1_54a	 # added -Wno-deprecated -Wno-write-strings -fpermissive
+geant4-10.04.p01 # depends on xerces-c
+geant4-10.06     # depends on xerces-c
+
+
+11) root: now automatic build by rpm
+11-1) pythia
+wget-1.20.3   # now from osxws
+pythia-6.428  # now use libgfortran.a instead of libgfortran.dylib
+pythia8-244
+
+11-2) root
+root5-5.34.36 # had to apply gcc9 patches to build cint:
+	      # std::map itererator's "==" operator implementation changed
+	      # from member function to friend function in gcc9.
+              # add /opt/X11/{include,lib} to "configure" so as to remove
+	      # its symlink to /usr/X11/{include,lib}, which is not allowed
+	      # on Catalina.
+              # Catalina removed /usr/include, had to patch rootcint to
+              # make it properly find "AvailabilityMacros.h".
+root-6.18.04 # now uses cmake (modified spec accordingly)
+	     # ./stressHepix failed with libCore.so not loaded	
+	     # need to switch off csrutil
+		Cmd+R
+		$ sudo csrutil disable
+             # had to modify CMakeLists.txt for gl and glew to tell
+             # the location of the X11 include and X11 lib dirs.
+             # had also to modify configure of AfterImage library to
+             # add /opt/X11/include to X11 headder search path.
+             # had to add -Ddavix=OFF to cmake options, otherwise all tests
+             # segfault.
+             # test/stressRooStats needs libstdc++.6.dylib explicitly linked in.	
+
+12) LCIO
+lcio-02.13.01 # fro githab head version
+             # had to patch cmake/ilcsoft_default_cxx_flags.cmake
+             # to replace -Wl,-no-undefined by -Wl,-undefined,dynamic_lookup
+
+
+13) garfield++
+13-1) Preparation
+eigen-3.3.7
+elmer-8.4
+fltk-1.3.5
+gmsh-4.5.1
+
+13-2) garfield++
+r545 # obtained from svnserver
+     # patched Random.hh to avoid duplicate symbol: RndmDirection
+
+
+14) lcsoft
+/Users/proj/soft/lcsoft # patched cxxdepends
+                        # to let rootcint to fine system headers.
+                        # Notice that /usr/include is removed on Catalina.
+$ cd /Users/proj/soft/lcsoft/physsim/pro
+$ for i in `find . -name jsf.conf`; do cp -p $i $i.catalina; sed -e "s;/proj/soft/data5;/Users/proj/soft/data5;" $i.catalina > $i ; done
+$ find . -name *.catalina -exec rm -f {} \;
+
+
+15) yoka
+/Users/proj/cdc/soft/yoka
+# had to patch cxxdepends and makejsf.tmpl
+# works with root6
+# with Catalina and gcc9, all scripts need ACLiC (i.e. with *.C+)
+# had to revert "Runinfo.h+" to "Runinfo.h" in the scriopt for ACLiC.
+
+
+16) ilcsoft
+16-1) Install external libraries
+HepMC3          # to build it, temporarily uninstall python3.
+fastjet-3.2.1
+fjcontrib-1.026
+ocaml-4.06.1
+whizard-2.6.3
+
+########### CAUTION ############################################
+Never create a symlink: /opt/osxws/lib/libstdc++.dylib,
+which caused a segfault in Marlin.
+By default the linker links /usr/bin/libstd++.dylib instead of 
+/opt/osxws/lib/libstdc++.a
+Somethimes I had to do
+gSystem->Load("/usr/lib/libstdc++.dylib");
+before running a script in the root session.
+################################################################
+
+
+16-2) Build dependent semi-external libraries
+$ sudo mkdir -p /Users/proj/soft/ilcsoft
+$ sudo chown <username> /Users/proj/soft/ilcsoft
+
+ilcutil-v01-05:
+$ cd <source directory>
+$ mkdir -p /Users/proj/soft/ilcsoft/ilcutil
+$ tar -zxvf ilcutil-v01-05.tar.gz -C /Users/proj/soft/ilcsoft/ilcutil
+$ pushd /Users/proj/soft/ilcsoft/ilcutil/v01-05
+$ patch -p1 -s < <source directory>/ilcutil-v01-05-macosx10.13.patch
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+$ make install
+$ popd
+
+ced-v01-09-02:
+$ mkdir -p /Users/proj/soft/ilcsoft/CED
+$ tar -zxvf ced-v01-09-02.tar.gz -C /Users/proj/soft/ilcsoft/CED
+$ pushd /Users/proj/soft/ilcsoft/CED/v01-09-02
+$ mkdir build
+$ cd build
+$ cmake -DILCUTIL_DIR=/Users/proj/soft/ilcsoft/ilcutil/v01-05 ..
+$ make
+$ make install
+$ popd
+
+CondDBMySQL_ILC-0-9-6:
+$ mkdir -p /Users/proj/soft/ilcsoft/CondDBMySQL
+$ tar -zxvf CondDBMySQL_ILC-0-9-6.tar.gz -C /Users/proj/soft/ilcsoft/CondDBMySQL
+$ pushd /Users/proj/soft/ilcsoft/CondDBMySQL/CondDBMySQL_ILC-0-9-6
+$ mkdir build
+$ cd build
+$ cmake -DILCUTIL_DIR=/Users/proj/soft/ilcsoft/ilcutil/v01-05 ..
+$ make
+$ make install
+$ popd
+
+16-3) ilcsoft-v02-00-01
+$ cd <source directory>
+$ tar -zxvf ilcinstall-v02-00-01.tar.gz -C /Users/proj/soft/ilcsoft
+$ cd /Users/proj/soft/ilcsoft/ilcinstall
+$ patch -p1 -s -b < ../src/v02-00-01/ilcinstall-v02-00-01-macosx10.15.patch
+$ ./ilcsoft-install -i releases/v02-00/release-osx.cfg
+.......
+
+... before compilation starts, apply the following patches in a new window:
+... Open a new terminal and do the following
+
+$ pushd ../v02-00-01/MarlinTPC/v01-04
+$ patch -p1 -s < <source directory>/marlintpc-v01-04-not0.patch
+$ patch -p3 -s < <source directory>/marlintpc-rootfileproc.patch
+$ popd
+$ pushd ../v02-00-01/bbq/v00-01-03
+$ patch -p1 -s < <source directory>/bbq-v00-01-03.patch
+$ popd
+$ pushd ../v02-00-01/DD4hep/v01-07
+$ patch -p1 -s < <source directory>/dd4hep-v01-07.patch
+$ patch -p1 -s < <source directory>/dd4hep-v01-07-root614.patch
+$ popd
+$ pushd ../v02-00-01/lcgeo/v00-16-01
+$ patch -p2 -s < ../../../src/v02-00-01/lcgeo-v00-16-01.patch 
+$ popd
+$ pushd ../v02-00-01/DD4hepExamples/v01-07-01/
+$ patch -p2 -s < ../../../src/v02-00-01/dd4hepexamples-v01-07-01.patch
+$ popd
+$ pushd ../v02-00-01/PandoraPFANew/v03-09-00
+$ patch -p1 -s < <source directory>/pandrapfanew-v03-09-00.patch
+$ popd
+
+# Note:
+# DD4hep: DDCore/src/NamedObject.cpp # commented out instantiation of dd4hep::Handle<NamedObject>
+#       : DDCore/src/plugins/LCDDConverter.cpp # const TGeoMatrix &linv, etc.
+#       : cmake/DD4hepBuild.cmake    # replace -no-undefined by undefined,error
+# PandrawPFANew: PandoraSDK-v03-02-01/src/Xml/tinyxmlparser.cc # [[fallthrough]];
+# bbq: v00-01-03/src/TBBQManager.cxx # avoid comparison of pointer with logical
+#
+# To run Marlin, I had to swich off the system integration util:
+# Reboot the system with Cmd+R (or if it does not work, Opt+Cmd+R) and type in
+# csrutil disable
+--------------------------------------------------------------
+# Note 2: geant4.10.06 issue
+#   ilcsoft-v02-00-01/DD4hep does not compile with this version, claiming 
+#   that it cannot find a proper verson of xerces-c even though it's there.
+#   This probelm persists even if xerces-c support is switched off.
+#   --> geant4-10.04.p01 does not have this problem, though it is simply 
+#       because xerces-c is not linked in this version.
+#   --> The problem is caused by 
+#            /opt/g4/10.06.01/lib/Geant4-10.6.0/Geant4LibraryDepends.cmake
+#       which includes XercesC::XercesC in INTERFACE_LINK_LIBRARIES though
+#       there is no dictionary provided to translate XercesC::XercesC to
+#       a real path to libxerces-c.dylib. 
+#       ##### Temporary Dirty Hack ####
+#       Removed XercesC::XercesC from INTERFACE_LINK_LIBRARIES.
+#       Be sure to fix this when geant4 is rebuilt.
+#       The xerces-c version check failure in DD4hep's FindXercesC.cmake
+#       is fixed by setting VERSION_VAR from "XercesVersion.hpp".
+#   --> Found FindXercesC.cmake officially provided by cmake 3.15.5.
+#       Just removing DD4hep's FindXercesC.cmake fixed the problem.
+#       For lcgeo, dd4hepexamples, add xercesc to include dirs.
+#   --> Some tex package missing -> listfititems.sty?
+#   --> Switch off doc generation temporarily. 
+--------------------------------------------------------------
+To rebuid a package 
+$ cd <package dir>
+$ touch .install_failed.tmp
+
+
+-------------------------------------------------------------
+To be moved to OSXWS
+-------------------------------------------------------------
+To be moved:
+ gcc
+
+To be possibly moved:
+ eigen
+ gsl
+ libpgp-error
+ libgcrypt
+
+
+
+
+
+
+
+-------------------------------------------------------------
+Old notes
+-------------------------------------------------------------
+4) Update base libraries
+Prepare dependent HEPonX RPMs for 10.12 using Apple's gcc:
+- HEPSystem
+- imake
+- Libcompat
+     Set PUBLIC_HDR_INSTALLDIR and PRIVATE_HDR_INSTALLDIR
+     to /opt/osxws/include/compat
+and then install them.
+
+# update-alternatives --config gcc
+  --> select /opt/osxws/bin/gcc
+
+ 
+5) CERNLIB build: now automatic build by rpm
+$ cd ~/rpm/SPECS
+$ apt-get source cernlib
+$ rpmbuild -ba cernlib.spec >& LOGs/cernlib &
+$ sudo rpm -ivh ../RPMS/x86_64/cernlib-2006-*
+
+Then prepare RPMs for Dis45, Topdraw, and TDR.
+
+--------------
+XQuartz-2.7.11's libXt.6.dylib is in two-level-namespace,
+which breaks paw++.
+To work around this problem, do the following:
+$ su
+# cd /opt/X11/lib
+# mkdir two_level_namespace
+# mv libXt.6.dylib two_level_namespace
+# cp -p flat_namespace/libXt.6.dylib .
+--------------
+
+
+--------------
+osxws 10.12 comes with openssl-1.1.x which is incompatible with
+mysql-5.1. had to create compat-openssl10 package to make
+openssl-1.0.2e coexist with openssl-1.1.x.
+This requires root and cvs to be recompiled as well.
+--------------
+
+4) CLHEP, GSL, Xerces-c
+Prepare and install RPMs for CLHEP, GSL, and Xerces-c.
+
+5) geant4: now automatic build by rpm
+$ apt-get source geant4
+$ rpmbuild -ba geant4.spec >& LOGs/geant4 &
+$ sudo rpm -ivh ../RPMS/x86_64/geant4-9.6*
+
+Then prepare RPMs for dawn, dawncut, and david.
+
+6) root: now automatic build by rpm
+$ sudo apt-get install fftw3-devel fftw3
+$ apt-get source pythya
+$ rpmbuild -ba pythia.spec >& LOGs/pythia &
+$ sudo rpm -ivh ../RPMS/x86_64/pythia*
+$ apt-get source root
+$ rpmbuild -ba root.spec >& LOGs/root &
+$ sudo rpm -ivh ../RPMS/x86_64/root*
+
+>>> libgfortran.dylib was missing.
+    This forced libgfortran.a to be linked.
+    -> Create a symlink.
+>>> root5 requires Fons's patch.
+    -> This is to avoid confusion in OSX minor version detection
+       using replacing "12345" with MACOSX_MINOR and then compare
+       the result with "12345" again ("12345" contains "12" for
+       Sierra).
+>>> root5 requires gcc6 patch (-std=c++98 and treatment for GCC_MAJVER).
+
+
+7) For ilcsoft
+Prepare and install RPMs for lcio and mysql
+LCIO: now automatic build by rpm
+$ apt-get source lcio
+$ rpmbuild -ba lcio.spec >& LOGs/lcio &
+$ sudo rpm -ivh ../RPMS/x86_64/lcio*
+
+>>> lcio v02-05 did not compile with gcc5, because of R__ACCESS_IN_SYMBOL
+    defined in a root header: "RConfig.h" for gcc5.
+    lcio v02-07 compiles without this hack.
+
+>>> 10.12 (as well as 10.11) does not allow DYLD_LIBRARY_PATH due to SIP 
+    (system integrity protection)
+    To disable SIP, follow the following:
+    Follow these steps to disable SIP:
+	Restart your Mac.
+	Before OS X starts up, hold down Command-R and keep it held down 
+	until you see an Apple icon and a progress bar. Release. 
+	This boots you into Recovery.
+	From the Utilities menu, select Terminal.
+	At the prompt type exactly the following and then press Return: 
+	# csrutil disable
+        Terminal should display a message that SIP was disabled.
+        From the  menu, select Restart.
+	You can re-enable SIP by following the above steps, but using 
+	# csrutil enable
+	instead.
+    Better way is to use 
+	1) g++ .... -Wl,-rpath,@loader_path/../lib
+	2) g++ -dynamiclib -o libXX.so ...  -install_name @rpath/libXX.so
+    or to give a full path install_name to any dynamic library.
+
+>>> gfortran 5.3 has an optimizer problem. 
+	had to replace -O by -O0 to compile tauola (BWIG)
+
+MySQL: upgrade to v5.1.73
+* Problem with undefined SSL_OP_NO_COMPRESSION  (openssl: 0.9.8)
+  --> mysql-no_compression.patch
+* Couldn not build with "Apple's sed", had to use "sed" from osxws.
+
+8) Garfield++
+Prepare and install RPM.
+
+9) TeX
+$ sudo apt-get install TeXShop
+
+10) Synaptic
+$ sudo apt-get install synaptic
+
+11) lcsoft
+/proj/soft/lcsoft/bin
+
+12) ilcsoft
+
+>>>  Create rpms for libgpg-error libgcrypt
+>>>  -std=c++98 caused MAXFLOAT to be defined by math.h
+     had to remove -ansi -std=c++98 by editing 
+     build/CMakeFiles/Mokka.dir/flags.make to compile Mokka.
+        problem with cmake?
+     This '-std=c++98' is set by "geant4/9.6.p02/lib/Geant4-9.6.2/Geant4Config.cmake
+     Temporarily removed this option from Geant4Config.cmake by hand.
+     Maybe we should try to modify the geant4 package.
+>>>> -std=c++11 must come after -ansi -pedantic
+
+For DD4hep, to avoid R__ACCESS_SYMBOL problem, set
+	-D__GNUC__=4 -D__GNUC_MINOR__=9
+to fool the system (dirty hack).
+With Xcode 8.2, this is no longer needed.
+
+---------------
+With gcc6.2 I had
+error: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/install_name_tool
+: for: /proj/soft/ilcsoft/v01-17-11/PandoraPFANew/v02-09-01/lib/libPandoraSDK.02.03.01.dylib (for architecture 
+x86_64) option "-add_rpath /proj/soft/ilcsoft/v01-17-11/PandoraPFANew/v02-09-01/lib" would duplicate path, file
+ already has LC_RPATH for: /proj/soft/ilcsoft/v01-17-11/PandoraPFANew/v02-09-01/lib
+It looks like the library was not compiled with @rpath.
+---------------
+
+
+
+/proj/soft/ilcsoft/src/v01-07-11
+$ svn co https://svnsrv.desy.de/public/ilctools/ilcinstall/tags/v01-17-11
+
+13) yoka
+Use "root-config --libs" instead of "root-config --new --libs"
+to make unpacker run.
+
+------------
+a) Widget Stickies
+   Copy
+	~/Library/Preferences/widget-com.apple.widget.stickies.*
+
+b) iBook synchronization
+	Use iTuenes and select your iPhone from the device list
+        and check the PDF files to be shared.
+
+c) To remove unwanted temporary file names in the finder tool bar, 
+   use "optin+command+Click" and move them away from the tool bar.
+
+d) Mail (To move from an old machine to a new machine)
+   Copy
+	/Users/fujiik/Library/Mail/V2 to the new machine.
+        (V2 for Yosemite and V3 for El Capitan)
+        If V4 is already there, remove or rename it:
+        $ mv V4 V4.bak
+   Replace
+	/Users/fujiik/Library/Containers/com.apple.mail
+        $ cd /Users/fujiik/Library/Containers/
+        $ mv com.apple.mail com.apple.mail.bak
+        $ cp -RPp <somewhere>/com.apple.mail .
+   Then open Mail.app and let it upgrade the mail system from V2 to V4.
+
+
