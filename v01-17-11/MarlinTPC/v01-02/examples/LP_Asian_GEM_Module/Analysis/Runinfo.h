@@ -16,10 +16,15 @@ public:
     return gInstancePtr;
   }
 
-  inline double GetDlength  (int run)
+  inline double GetDlength  (int run, int row = 9999 )
   {
     if (fRunMap.find(run) == fRunMap.end()) return 1.e10;
-    else                                    return fRunMap[run].getDlength();
+    if (row > 1000) {
+        return fRunMap[run].getDlength();
+    } else {
+	double dl = fRunMap[run].getIntersept() + fRunMap[run].getSlope() * row;
+	return fRunMap[run].getDlength() - dl;
+    }
   }
 
   inline double GetBfield   (int run)
@@ -125,12 +130,15 @@ public:
 
   // ---------
   // Utility
-
+  // ---------
+ inline void   RegisterRun(int run, int b, double p, double d, 
+		           double phi = 0, 
+			   double theta = 0, double slope = 0, double intercept = 0)
   {
     if (fRunMap.find(run) == fRunMap.end()) {
-      fRunMap[run] = RunCond(b,p,d);
+      fRunMap[run] = RunCond(b,p,d,phi,theta, slope, intercept);
     } else {
-      cerr << "run" << run << " already there!" << endl;;
+      cerr << "run" << run << " already there!" << endl;
     }
   }
 
@@ -399,11 +407,8 @@ private:
     RegisterRun(18744, 1, 5, 50);
 
   //2016
-    //double doff2016_1 = 0.69;//(yumia) drift length offset for data 19717 to 19865
-    double doff2016_1 = 0;//(yumia) drift length offset for data 19717 to 19865
-    double doff2016_2 = 0;//(yumia) drift length offset for data 19866 to 19916
-    //double doff2016 = 0.52;//(yumia) drift length offset for data with gate decided using 19985 set(Best data set)
-    double doff2016 = 0;//(yumia) drift length offset for data with gate decided using 19985 set(Best data set)
+    double doff2016_1 = 0.69;//(yumia) drift length offset for data 19717 to 19865
+    double doff2016 = 0.52;//(yumia) drift length offset for data with gate decided using 19985 set(Best data set)
     double doff2016wo = 0.61;//(yumia) drift length offset for data without gate decided using set16
                             // cathode hit 
 
@@ -476,16 +481,16 @@ private:
     RegisterRun(19942, 0, 5,55);
 
    //Run set 5  //calibration has not yet finished
-    RegisterRun(19902, 1, 5,doff2016+15);
-    RegisterRun(19903, 1, 5,doff2016+15);
-    RegisterRun(19904, 1, 5,doff2016+25);
-    RegisterRun(19905, 1, 5,doff2016+25);
-    RegisterRun(19906, 1, 5,doff2016+35);
-    RegisterRun(19907, 1, 5,doff2016+35);
+    RegisterRun(19902, 1, 5, 15, 0, 20, 0.19, 2.6);
+    RegisterRun(19903, 1, 5, 15, 0, 20, 0.19, 2.6);
+    RegisterRun(19904, 1, 5, 25, 0, 20, 0.19, 2.0);
+    RegisterRun(19905, 1, 5, 25, 0, 20, 0.19, 2.0);
+    RegisterRun(19906, 1, 5, 35, 0, 20, 0.19, 1.3);
+    RegisterRun(19907, 1, 5, 35, 0, 20, 0.19, 1.3);
 
    //Run set 6  //calibration has not yet finished
-    RegisterRun(19901, 1, 5,1.4+15);
-    RegisterRun(19900, 1, 5,1.4+25);
+    RegisterRun(19901, 1, 5, 15, 0, 10, 0.09, 1.3);
+    RegisterRun(19900, 1, 5, 25, 0, 10, 0.09, 1.5);
 
    //Run set 7
     RegisterRun(19895, 1, 5, doff2016_1+1.25);
@@ -777,14 +782,24 @@ public:
     int    _bfield;
     double _momentum;
     double _dlength;
+    double _phi;
+    double _theta;
+    double _slope;
+    double _intercept;
 
   public:
-    RunCond(int b = 1, double p = 5., double d = 0.)
-           : _bfield(b), _momentum(p), _dlength(d) {}
+    RunCond(int b = 1, double p = 5., double d = 0., 
+	    double phi = 0, double theta = 0, double slope = 0, double intercept = 0, int row = 0, int module = 3)
+           : _bfield(b), _momentum(p), _dlength(d), 
+	   _phi(phi), _theta(theta), _slope(slope), _intercept(intercept) {}
 
-    inline int    getBfield  () const { return _bfield;   } // [T]
-    inline double getDlength () const { return _dlength;  } // [cm]
-    inline double getMomentum() const { return _momentum; } // [GeV]
+    inline int    getBfield    () const { return _bfield;    } // [T]
+    inline double getDlength   () const { return _dlength;   } // [cm]
+    inline double getMomentum  () const { return _momentum;  } // [GeV]
+    inline double getPhi       () const { return _phi;       } // [degree]
+    inline double getTheta     () const { return _theta;     } // [degree]
+    inline double getSlope     () const { return _slope;     } // [cm/row#]
+    inline double getIntersept () const { return _intercept; } // [cm]
   };
 
 private:
