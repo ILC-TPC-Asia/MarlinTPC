@@ -22,7 +22,7 @@ public:
     if (row > 1000) {
         return fRunMap[run].getDlength();
     } else {
-	double dl = fRunMap[run].getIntersept() + fRunMap[run].getSlope() * row;
+	double dl = fRunMap[run].getIntercept() + fRunMap[run].getSlope() * row;
 	return fRunMap[run].getDlength() - dl;
     }
   }
@@ -410,7 +410,6 @@ private:
     double doff2016_1 = 0.69;//(yumia) drift length offset for data 19717 to 19865
     double doff2016 = 0.52;//(yumia) drift length offset for data with gate decided using 19985 set(Best data set)
     double doff2016wo = 0.61;//(yumia) drift length offset for data without gate decided using set16
-                            // cathode hit 
 
    //Run set 1 (http://www-jlc.kek.jp/jlc/ja/elog)
     RegisterRun(19987, 1, 5,doff2016+1.25);
@@ -799,7 +798,7 @@ public:
     inline double getPhi       () const { return _phi;       } // [degree]
     inline double getTheta     () const { return _theta;     } // [degree]
     inline double getSlope     () const { return _slope;     } // [cm/row#]
-    inline double getIntersept () const { return _intercept; } // [cm]
+    inline double getIntercept () const { return _intercept; } // [cm]
   };
 
 private:
